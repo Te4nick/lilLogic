@@ -11,6 +11,6 @@ class LogicAnd(Node):
         self.add_output("Output")
 
     def calculate(self):
-        result = dpg.get_value(self.inputs["Input 1"])
-        result = result & dpg.get_value(self.inputs["Input 2"])
-        dpg.set_value(self.outputs["Output"], result)
+        result = self.inputs["Input 1"]
+        result = result & self.inputs["Input 2"]
+        self.set_output_value("Output", result)
