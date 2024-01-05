@@ -18,7 +18,7 @@ class NodeField:
         self.readonly = readonly
 
         self.value: int = 0
-        self.callable_updates: list[Callable] = []  # List of other inputs update() methods
+        self.callable_updates: dict[str: Callable] = {}  # List of other inputs update() methods
 
         self.dpg_attr: int | str = ""
         self.dpg_field: int | str = ""
@@ -51,11 +51,13 @@ class NodeField:
     def update(self, value: int):
         self.value = value
         dpg.set_value(self.dpg_field, self.value)
-        for update_call in self.callable_updates:
+        for update_call in self.callable_updates.values():
             update_call(value)
 
-    def add_listener(self, listener: Callable):
-        self.callable_updates.append(listener)
+    def add_listener(self, item: int | str, listener: Callable):
+        if item is int:
+            item = dpg.get_item_label(item)
+        self.callable_updates[item] = listener
         listener(self.value)
 
     def create_listener(self) -> Callable:
@@ -68,3 +70,4 @@ class NodeField:
     def remove_listener(self, item: int | str) -> None:  # TODO: implement
         if item is int:
             item = dpg.get_item_label(item)
+        self.callable_updates.pop(item)
