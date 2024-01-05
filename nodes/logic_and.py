@@ -1,4 +1,4 @@
-from nodes.base_node import Node, dpg
+from internal.base.base_node import Node
 
 
 class LogicAnd(Node):
@@ -11,6 +11,6 @@ class LogicAnd(Node):
         self.add_output("Output")
 
     def calculate(self):
-        result = self.inputs["Input 1"]
-        result = result & self.inputs["Input 2"]
-        self.set_output_value("Output", result)
+        result = self.get_field_value("Input 1")
+        result = result & self.get_field_value("Input 2")
+        self.set_field_value("Output", result)

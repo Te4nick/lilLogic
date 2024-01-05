@@ -1,4 +1,4 @@
-from nodes.base_node import Node
+from internal.base.base_node import Node
 
 
 class LogicOut(Node):

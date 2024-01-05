@@ -1,8 +1,9 @@
 import dearpygui.dearpygui as dpg
 from nodes.logic_and import LogicAnd
-from nodes.logic_out import LogicOut
-from nodes.logic_in import LogicIn
-from nodes.base_node import Node
+# from nodes.logic_out import LogicOut
+# from nodes.logic_in import LogicIn
+# from nodes.logic_not import LogicNot
+from internal.base.base_node import Node
 
 
 class NodeDB:
@@ -14,7 +15,7 @@ class NodeDB:
         return self.__node_map[dpg.get_item_parent(item_id)]
 
     def register_node(self, node: Node):
-        self.__node_map[dpg.get_alias_id(node.alias)] = node
+        self.__node_map[dpg.get_alias_id(node.node)] = node
 
     def register_link(self, link_id: int, from_attr_id: int, to_attr_id: int):
         self.__link_map[link_id] = (
@@ -22,9 +23,13 @@ class NodeDB:
             to_attr_id
         )
 
-        self.get_parent_node(from_attr_id).add_output_link(
-            from_attr_id + 1,
-            to_attr_id + 1
+        (self.get_parent_node(from_attr_id)
+            .get_field(dpg.get_item_label(from_attr_id + 1))
+            .add_listener(
+                self.get_parent_node(to_attr_id)
+                .get_field(dpg.get_item_label(to_attr_id + 1))
+                .create_listener()
+        )
         )
 
     def unregister_link(self, link_id: int):
@@ -34,6 +39,14 @@ class NodeDB:
             to_attr_id + 1
         )
 
+        (self.get_parent_node(from_attr_id)
+            .get_field(dpg.get_item_label(from_attr_id + 1))
+            .add_listener(
+                self.get_parent_node(to_attr_id)
+                .get_field(dpg.get_item_label(to_attr_id + 1))
+                .create_listener()
+        )
+        )
 
 
 if __name__ == "__main__":  # TODO: extract to App.py ?
@@ -41,6 +54,7 @@ if __name__ == "__main__":  # TODO: extract to App.py ?
     node_db = NodeDB()
 
     dpg.create_context()
+
 
     # callback runs when user attempts to connect attributes
     def link_callback(sender, app_data):  # TODO: mass callback refactor
@@ -51,6 +65,7 @@ if __name__ == "__main__":  # TODO: extract to App.py ?
         # print({"link_id1_parent": dpg.get_item_parent(app_data[0]),
         #        "link_id2_parent": dpg.get_item_parent(app_data[1])})
         # dpg.get_item_user_data(dpg.get_item_parent(app_data[0]))["class"].add_output_link(app_data[0], app_data[1])
+
 
     # callback runs when user attempts to disconnect attributes
     def delink_callback(sender, app_data):
@@ -77,8 +92,9 @@ if __name__ == "__main__":  # TODO: extract to App.py ?
 
             node_db.register_node(LogicAnd())
             node_db.register_node(LogicAnd())
-            node_db.register_node(LogicOut())
-            node_db.register_node(LogicIn())
+            # node_db.register_node(LogicOut())
+            # node_db.register_node(LogicIn())
+            # node_db.register_node(LogicNot())
 
     dpg.create_viewport(title='Custom Title', width=800, height=600)
     dpg.setup_dearpygui()
