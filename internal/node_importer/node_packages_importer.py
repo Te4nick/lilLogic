@@ -77,7 +77,7 @@ class NodeImporter:
     def get_package_node_names(self, package_name: str) -> list[str]:
         return list(self.node_dict[package_name].keys())
 
-    def get_node_class(self, package_name: str, node_name: str) -> Node:
+    def get_node_class(self, package_name: str, node_name: str) -> Node.__class__:
         return self.node_dict[package_name][node_name]
 
 

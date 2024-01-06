@@ -2,6 +2,7 @@ from internal.base.base_node import Node
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
+
 class NodeDB:
     def __init__(self):
         self.__node_map: dict[int | str, Node] = {}

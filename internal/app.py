@@ -6,8 +6,6 @@ from icecream import ic
 from internal.node_db import NodeDB
 from internal.node_importer.node_packages_importer import NodeImporter
 
-LastNodePosition = [100, 100]
-
 
 # Destroy window if closed
 def callback_close_window(sender):
@@ -16,6 +14,8 @@ def callback_close_window(sender):
 
 class NodeEditor:
     def __init__(self):
+
+        self.__last_node_pos = [0, 0]
 
         self.node_db = NodeDB()
 
@@ -55,7 +55,7 @@ class NodeEditor:
 
             with dpg.handler_registry():
                 dpg.add_mouse_click_handler(
-                    callback=save_last_node_position
+                    callback=self.__on_save_last_node_position
                 )
 
             with dpg.handler_registry():
@@ -85,7 +85,7 @@ class NodeEditor:
     def __on_add_item_callback(self, package_name: str, node_name: str):
         def add_item_callback(sender):
             node = self.nimport.get_node_class(package_name, node_name)
-            self.node_db.register_node(node())
+            self.node_db.register_node(node({"pos": self.__last_node_pos}))
 
         return add_item_callback
 
@@ -109,12 +109,6 @@ class NodeEditor:
 
         return delete_item_callback
 
-
-# Saving the position of the last selected node
-def save_last_node_position():
-    global LastNodePosition
-    if not dpg.get_selected_nodes("NodeEditor"):
-        pass
-    else:
-        LastNodePosition = dpg.get_item_pos(dpg.get_selected_nodes("NodeEditor")[0])
-
+    def __on_save_last_node_position(self):
+        if dpg.get_selected_nodes("NodeEditor"):
+            self.__last_node_pos = dpg.get_item_pos(dpg.get_selected_nodes("NodeEditor")[0])

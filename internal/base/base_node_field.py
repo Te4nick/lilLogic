@@ -25,7 +25,6 @@ class NodeField:
         self.dpg_field: int | str = ""
 
     def __del__(self):
-        del self.callable_updates
         dpg.delete_item(self.dpg_field)
         dpg.delete_item(self.dpg_attr)
 
@@ -77,7 +76,7 @@ class NodeField:
 
         return listener
 
-    def remove_listener(self, item: int | str) -> None:  # TODO: implement
+    def remove_listener(self, item: int | str) -> None:
         if item is int:
             item = dpg.get_item_label(item)
         self.callable_updates.pop(item)
