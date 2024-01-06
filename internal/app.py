@@ -1,6 +1,8 @@
 import os
 
 import dearpygui.dearpygui as dpg
+from icecream import ic
+
 from internal.node_db import NodeDB
 from internal.node_importer.node_packages_importer import NodeImporter
 
@@ -89,27 +91,21 @@ class NodeEditor:
 
     def __on_delete_item_callback(self):
         def delete_item_callback(sender):
-            # for selected_node in dpg.get_selected_nodes("NodeEditor"):
-            #     # Deleting node and attached links
-            #     ## Extract all children of the deleted node
-            #     selected_node_children = dpg.get_item_children(selected_node)[1]
-            #     ## Extract all existing links in the Node Editor
-            #     node_editor_links = dpg.get_item_children("NodeEditor")[0]
-            #     ## Iterate through NodeEditor elements and delete attached links
-            #     for link in node_editor_links:
-            #         if dpg.get_item_configuration(link)["attr_1"] in selected_node_children or \
-            #                 dpg.get_item_configuration(link)["attr_2"] in selected_node_children:
-            #             dpg.delete_item(link)
-            #     ## Iterate trough LinkList and remove attached links
-            #     for item in LinkList:
-            #         for sub_item in item:
-            #             if dpg.get_item_alias(selected_node) in sub_item:
-            #                 LinkList.remove(item)
-            #     # Deleting node
-            #     dpg.delete_item(selected_node)
-            # for selected_link in dpg.get_selected_links("NodeEditor"):
-            #     func_link_destroyed("NodeEditor", selected_link)
-            pass
+            for selected_node in dpg.get_selected_nodes("NodeEditor"):
+                # Deleting node and attached links
+                # Extract all children of the deleted node
+                selected_node_children = dpg.get_item_children(selected_node)[1]
+                # Extract all existing links in the Node Editor
+                node_editor_links = dpg.get_item_children("NodeEditor")[0]
+                # Iterate through NodeEditor elements and delete attached links
+                for link in node_editor_links:
+                    if dpg.get_item_configuration(link)["attr_1"] in selected_node_children or \
+                            dpg.get_item_configuration(link)["attr_2"] in selected_node_children:
+                        dpg.delete_item(link)
+                # Deleting node
+                ic(dpg.get_item_label(selected_node))
+                node = self.node_db.unregister_node(selected_node)
+                node.__del__()
 
         return delete_item_callback
 

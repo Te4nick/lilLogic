@@ -20,6 +20,12 @@ class Node:
 
         self.calculate()
 
+    def __del__(self):
+        for field in self.fields.values():
+            field.__del__()
+        del self.fields
+        dpg.delete_item(self.node)
+
     def __build_node(self, user_data):
         user_data["class"] = self
         self.node = dpg.add_node(
@@ -72,3 +78,8 @@ class Node:
 
     def get_field(self, label) -> NodeField:
         return self.fields[label]
+
+    def destroy(self):
+        for field in self.fields.values():
+            field.__del__()
+        del self.fields

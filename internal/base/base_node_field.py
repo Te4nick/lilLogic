@@ -1,5 +1,6 @@
 import dearpygui.dearpygui as dpg
 from typing import Any, Callable
+from icecream import ic
 
 
 class NodeField:
@@ -23,8 +24,17 @@ class NodeField:
         self.dpg_attr: int | str = ""
         self.dpg_field: int | str = ""
 
+    def __del__(self):
+        del self.callable_updates
+        dpg.delete_item(self.dpg_field)
+        dpg.delete_item(self.dpg_attr)
+
     def __on_value_update(self):
+
         def value_changed(sender: Any = None, app_data: Any = None, user_data: Any = None):
+            ic(self.parent + f"_{self.label}",
+               self.callable_updates)
+
             self.update(dpg.get_value(sender))
             self.callback()
 
@@ -71,3 +81,6 @@ class NodeField:
         if item is int:
             item = dpg.get_item_label(item)
         self.callable_updates.pop(item)
+
+    def destroy(self):
+        del self.callable_updates
