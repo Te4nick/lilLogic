@@ -1,41 +1,37 @@
 import dearpygui.dearpygui as dpg
-from nodes.logic.logic_and import LogicAnd
-from nodes.logic.logic_out import LogicOut
-from nodes.logic.logic_in import LogicIn
-from nodes.logic.logic_not import LogicNot
-from internal.node_db import NodeDB
+from icecream import install as icinstall
+from internal.app import NodeEditor
+
+
+def callback_close_program(sender, data):
+    exit(0)
+
+
+def callback_show_debugger(sender, data):
+    dpg.show_debug()
+
+
+def callback_show_item_registry(sender, data):
+    dpg.show_item_registry()
+
 
 if __name__ == "__main__":  # TODO: extract to App.py ?
-
-    node_db = NodeDB()
+    icinstall()
 
     dpg.create_context()
+    dpg.create_viewport(title="Node Editor Template",
+                        width=1500,
+                        height=768)
 
-    # callback runs when user attempts to connect attributes
-    def link_callback(sender, app_data):
-        # app_data -> (link_id1, link_id2)
-        link = dpg.add_node_link(app_data[0], app_data[1], parent=sender)
-        node_db.register_link(link, app_data[0], app_data[1])
+    with dpg.viewport_menu_bar():
+        dpg.add_menu_item(label="Debugger", callback=callback_show_debugger)
+        dpg.add_menu_item(label="Item Registry", callback=callback_show_item_registry)
+        dpg.add_menu_item(label="Close", callback=callback_close_program)
 
-    # callback runs when user attempts to disconnect attributes
-    def delink_callback(sender, app_data):
-        # app_data -> link_id
-        dpg.delete_item(app_data)
-        node_db.unregister_link(app_data)
+        nodeEditor = NodeEditor()
 
-
-    with dpg.window(label="Tutorial", width=400, height=400):
-        with dpg.node_editor(tag="NodeEditor", callback=link_callback, delink_callback=delink_callback):
-
-            node_db.register_node(LogicAnd())
-            node_db.register_node(LogicAnd())
-            node_db.register_node(LogicOut())
-            node_db.register_node(LogicIn())
-            node_db.register_node(LogicNot())
-
-    dpg.create_viewport(title='Custom Title', width=800, height=600)
+    # Main Loop
     dpg.setup_dearpygui()
     dpg.show_viewport()
-    dpg.show_item_registry()
     dpg.start_dearpygui()
     dpg.destroy_context()
