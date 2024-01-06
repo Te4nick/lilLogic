@@ -11,6 +11,7 @@ class NodeField:
                  attribute_type: int = 0,
                  callback: Any | None = None,
                  readonly: bool = False,
+                 user_data: dict[str, Any] = None,
                  ):
         self.label = label
         self.parent = parent
@@ -39,10 +40,13 @@ class NodeField:
 
         return value_changed
 
-    def build(self):
+    def build(self, user_data: dict[str, Any] = None):
+        if user_data is None:
+            user_data = {}
+        user_data["class"] = self
         self.dpg_attr = dpg.add_node_attribute(
             tag=self.parent + f"_{self.label}",
-            user_data=self,
+            user_data=user_data,
             attribute_type=self.attribute_type,
             parent=self.parent,
         )

@@ -17,9 +17,9 @@ class NodeEditor:
 
         self.__last_node_pos = [0, 0]
 
-        self.node_db = NodeDB()
+        nimport = NodeImporter(os.path.join(os.getcwd(), "nodes"))
 
-        self.nimport = NodeImporter(os.path.join(os.getcwd(), "nodes"))
+        self.node_db = NodeDB(nimport)
 
         with dpg.window(tag="NodeEditorWindow",
                         label="NodeEditor",
@@ -31,9 +31,9 @@ class NodeEditor:
             # Add a menu bar to the window
             with dpg.menu_bar(label="MenuBar"):
 
-                for package_name in self.nimport.get_package_names():
+                for package_name in self.node_db.get_node_packages_names():
                     with dpg.menu(label=package_name):
-                        for node_name in self.nimport.get_package_node_names(package_name):
+                        for node_name in self.node_db.get_package_nodes_names(package_name):
                             dpg.add_menu_item(tag=f"Menu_AddNode_{node_name}",
                                               label=node_name,
                                               callback=self.__on_add_item_callback(package_name, node_name),
@@ -84,8 +84,7 @@ class NodeEditor:
 
     def __on_add_item_callback(self, package_name: str, node_name: str):
         def add_item_callback(sender):
-            node = self.nimport.get_node_class(package_name, node_name)
-            self.node_db.register_node(node({"pos": self.__last_node_pos}))
+            self.node_db.add_node(package_name, node_name, {"pos": self.__last_node_pos})
 
         return add_item_callback
 
@@ -104,8 +103,7 @@ class NodeEditor:
                         dpg.delete_item(link)
                 # Deleting node
                 ic(dpg.get_item_label(selected_node))
-                node = self.node_db.unregister_node(selected_node)
-                node.__del__()
+                self.node_db.delete_node(selected_node)
 
         return delete_item_callback
 
