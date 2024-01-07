@@ -2,8 +2,10 @@ import dearpygui.dearpygui as dpg
 from typing import Any, Callable
 from icecream import ic
 
+from internal.base.base_node_link import Link, Linkable
 
-class NodeField:
+
+class NodeField(Linkable):
 
     def __init__(self,
                  label: str,
@@ -20,20 +22,28 @@ class NodeField:
         self.readonly = readonly
 
         self.value: int = 0
-        self.callable_updates: dict[str: Callable] = {}  # List of other inputs update() methods
+
+        self.__links_to: dict[str: Link] = {}
+        self.__links_from: dict[str: Link] = {}
 
         self.dpg_attr: int | str = ""
         self.dpg_field: int | str = ""
 
     def __del__(self):
+        for link in self.__links_to.values():
+            link.__del__()
+        for link in self.__links_from.values():
+            link.__del__()
+        del self.__links_to
+        del self.__links_from
         dpg.delete_item(self.dpg_field)
         dpg.delete_item(self.dpg_attr)
 
-    def __on_value_update(self):
+    def __on_value_changed(self):
 
         def value_changed(sender: Any = None, app_data: Any = None, user_data: Any = None):
             ic(self.parent + f"_{self.label}",
-               self.callable_updates)
+               self.__links_to)
 
             self.update(dpg.get_value(sender))
             self.callback()
@@ -50,13 +60,12 @@ class NodeField:
             attribute_type=self.attribute_type,
             parent=self.parent,
         )
-        # dpg.add_int_value()
         self.dpg_field = dpg.add_input_int(
             tag=self.parent + f"_{self.label}_Value",
             label=self.label,
             width=100,
             default_value=0,
-            callback=self.__on_value_update(),
+            callback=self.__on_value_changed(),
             parent=self.dpg_attr,
             readonly=self.readonly,
         )
@@ -64,26 +73,22 @@ class NodeField:
     def update(self, value: int):
         self.value = value
         dpg.set_value(self.dpg_field, self.value)
-        for update_call in self.callable_updates.values():
-            update_call(value)
+        for link in self.__links_to.values():
+            link.send(value)
 
-    def add_listener(self, item: int | str, listener: Callable):
-        if item is int:
-            item = dpg.get_item_label(item)
-        self.callable_updates[item] = listener
-        listener(self.value)
+    def add_to_link(self, item: int | str, link: Link):
+        self.__links_to[item] = link
+        link.send(self.value)
 
-    def create_listener(self) -> Callable:
-        def listener(v: int) -> None:
-            self.update(v)
-            self.callback()
+    def delete_to_link(self, item: int | str):
+        self.__links_to.pop(item)
 
-        return listener
+    def add_from_link(self, item: int | str, link: Link):
+        self.__links_from[item] = link
 
-    def remove_listener(self, item: int | str) -> None:
-        if item is int:
-            item = dpg.get_item_label(item)
-        self.callable_updates.pop(item)
+    def delete_from_link(self, item: int | str):
+        self.__links_from.pop(item)
 
-    def destroy(self):
-        del self.callable_updates
+    def receive_value(self, value: Any):
+        self.update(value)
+        self.callback()

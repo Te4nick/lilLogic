@@ -78,8 +78,8 @@ class Node:
     def get_field_value(self, label) -> int:
         return self.__fields[label].value
 
-    def get_field(self, field: int | str) -> NodeField:
-        label = field
-        if field is int:
-            label = dpg.get_item_label(field)
+    def get_field(self, item: int | str) -> NodeField:
+        label = item
+        if item is int:
+            label = dpg.get_item_label(item)
         return self.__fields[label]

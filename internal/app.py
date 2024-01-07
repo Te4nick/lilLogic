@@ -3,6 +3,7 @@ import os
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
+from internal.managers.node_linker import NodeLinker
 from internal.node_db import NodeDB
 from internal.node_importer.node_packages_importer import NodeImporter
 
@@ -68,8 +69,7 @@ class NodeEditor:
     def __on_link_callback(self):
         def link_callback(sender, app_data):
             # app_data -> (link_id1, link_id2)
-            link = dpg.add_node_link(app_data[0], app_data[1], parent=sender)
-            self.node_db.register_link(link, app_data[0], app_data[1])
+            NodeLinker.link(app_data[0], app_data[1], parent="NodeEditor")
 
         return link_callback
 
@@ -77,8 +77,7 @@ class NodeEditor:
     def __on_delink_callback(self):
         def delink_callback(sender, app_data):
             # app_data -> link_id
-            dpg.delete_item(app_data)
-            self.node_db.unregister_link(app_data)
+            NodeLinker.unlink(app_data)
 
         return delink_callback
 
@@ -91,17 +90,6 @@ class NodeEditor:
     def __on_delete_item_callback(self):
         def delete_item_callback(sender):
             for selected_node in dpg.get_selected_nodes("NodeEditor"):
-                # Deleting node and attached links
-                # Extract all children of the deleted node
-                selected_node_children = dpg.get_item_children(selected_node)[1]
-                # Extract all existing links in the Node Editor
-                node_editor_links = dpg.get_item_children("NodeEditor")[0]
-                # Iterate through NodeEditor elements and delete attached links
-                for link in node_editor_links:
-                    if dpg.get_item_configuration(link)["attr_1"] in selected_node_children or \
-                            dpg.get_item_configuration(link)["attr_2"] in selected_node_children:
-                        dpg.delete_item(link)
-                # Deleting node
                 ic(dpg.get_item_label(selected_node))
                 self.node_db.delete_node(selected_node)
 
