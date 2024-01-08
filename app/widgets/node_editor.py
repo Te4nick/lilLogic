@@ -3,9 +3,7 @@ import os
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
-from internal.managers.node_linker import NodeLinker
-from internal.node_db import NodeDB
-from internal.node_importer.node_packages_importer import NodeImporter
+from internal.managers import NodeDB, NodeLinker, NodeImporter
 
 
 # Destroy window if closed
@@ -18,9 +16,9 @@ class NodeEditor:
 
         self.__last_node_pos = [0, 0]
 
-        nimport = NodeImporter(os.path.join(os.getcwd(), "nodes"))
+        self.nimport = NodeImporter(os.path.join(os.getcwd(), "nodes"))
 
-        self.node_db = NodeDB(nimport)
+        # self.node_db = NodeDB(nimport)
 
         with dpg.window(tag="NodeEditorWindow",
                         label="NodeEditor",
@@ -32,9 +30,9 @@ class NodeEditor:
             # Add a menu bar to the window
             with dpg.menu_bar(label="MenuBar"):
 
-                for package_name in self.node_db.get_node_packages_names():
+                for package_name in self.nimport.get_node_packages():
                     with dpg.menu(label=package_name):
-                        for node_name in self.node_db.get_package_nodes_names(package_name):
+                        for node_name in self.nimport.get_package_nodes(package_name):
                             dpg.add_menu_item(tag=f"Menu_AddNode_{node_name}",
                                               label=node_name,
                                               callback=self.__on_add_item_callback(package_name, node_name),
@@ -83,7 +81,8 @@ class NodeEditor:
 
     def __on_add_item_callback(self, package_name: str, node_name: str):
         def add_item_callback(sender):
-            self.node_db.add_node(package_name, node_name, {"pos": self.__last_node_pos})
+            node_class = self.nimport.get_node_class(package_name, node_name)
+            NodeDB.init_node(node_class, user_data={"pos": self.__last_node_pos})
 
         return add_item_callback
 
@@ -91,7 +90,7 @@ class NodeEditor:
         def delete_item_callback(sender):
             for selected_node in dpg.get_selected_nodes("NodeEditor"):
                 ic(dpg.get_item_label(selected_node))
-                self.node_db.delete_node(selected_node)
+                NodeDB.del_node(selected_node)
 
         return delete_item_callback
 

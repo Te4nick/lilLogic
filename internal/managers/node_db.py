@@ -1,7 +1,8 @@
 from typing import Any
 
 from internal.base.base_node import Node
-from internal.node_importer.node_packages_importer import NodeImporter
+from .node_packages_importer import NodeImporter
+from internal.utils import dpg2class
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
@@ -16,6 +17,14 @@ class NodeDB:
         node = self.__nimport.get_node_class(package_name, node_name)(user_data)
         self.__node_map[dpg.get_alias_id(node.alias)] = node
         ic(self.__node_map)
+
+    @staticmethod
+    def init_node(node: Node.__class__, user_data: Any):
+        node(user_data)
+
+    @staticmethod
+    def del_node(node: int | str):
+        dpg2class(node).__del__()
 
     def get_node_packages_names(self):
         return self.__nimport.get_package_names()

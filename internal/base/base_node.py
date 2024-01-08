@@ -9,7 +9,7 @@ from internal.base.base_node_field import NodeField
 class Node:
     node_type: str = "BaseNode"
 
-    def __init__(self, user_data: dict[str, Any] = None):
+    def __init__(self, parent: int | str = 0, user_data: dict[str, Any] = None):
         if user_data is None:
             user_data = {}
 
