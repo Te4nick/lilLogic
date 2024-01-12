@@ -3,7 +3,8 @@ import os
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
-from internal.managers import NodeDB, NodeLinker, NodeImporter
+from internal.managers import NodeLinker, NodeImporter
+from internal.utils import dpg2class
 
 
 # Destroy window if closed
@@ -82,7 +83,7 @@ class NodeEditor:
     def __on_add_item_callback(self, package_name: str, node_name: str):
         def add_item_callback(sender):
             node_class = self.nimport.get_node_class(package_name, node_name)
-            NodeDB.init_node(node_class, user_data={"pos": self.__last_node_pos})
+            node_class(user_data={"pos": self.__last_node_pos})
 
         return add_item_callback
 
@@ -90,7 +91,7 @@ class NodeEditor:
         def delete_item_callback(sender):
             for selected_node in dpg.get_selected_nodes("NodeEditor"):
                 ic(dpg.get_item_label(selected_node))
-                NodeDB.del_node(selected_node)
+                dpg2class(selected_node).__del__()
 
         return delete_item_callback
 

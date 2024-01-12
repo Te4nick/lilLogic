@@ -30,9 +30,9 @@ class NodeField(Linkable):
         self.dpg_field: int | str = ""
 
     def __del__(self):
-        for link in self.__links_to.values():
+        for link in list(self.__links_to.values()):
             link.__del__()
-        for link in self.__links_from.values():
+        for link in list(self.__links_from.values()):
             link.__del__()
         del self.__links_to
         del self.__links_from
