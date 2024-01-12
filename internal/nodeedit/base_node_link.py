@@ -1,6 +1,7 @@
 import dearpygui.dearpygui as dpg
 from typing import Any
-from internal.base.abc.link import Link, Linkable
+from internal.nodeedit.abc.link import Link
+from internal.nodeedit.abc.linkableabc import LinkableABC
 
 
 class NodeLink(Link):
@@ -11,8 +12,8 @@ class NodeLink(Link):
         self.__from_attr = from_attr
         self.__to_attr = to_attr
 
-        self.__from_field: Linkable = dpg.get_item_user_data(from_attr)["class"]
-        self.__to_field: Linkable = dpg.get_item_user_data(to_attr)["class"]
+        self.__from_field: LinkableABC = dpg.get_item_user_data(from_attr)["class"]
+        self.__to_field: LinkableABC = dpg.get_item_user_data(to_attr)["class"]
 
         self.__from_field.add_to_link(self.__to_attr, self)
         self.__to_field.add_from_link(self.__from_attr, self)

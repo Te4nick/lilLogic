@@ -3,7 +3,7 @@ import glob
 
 from icecream import ic
 import importlib.machinery
-from internal.base.base_node import Node
+from internal.nodeedit.base_node import Node
 
 
 class NodeImporter:

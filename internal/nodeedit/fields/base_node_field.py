@@ -2,7 +2,7 @@ import dearpygui.dearpygui as dpg
 from typing import Any, Callable
 from icecream import ic
 
-from internal.base.base_node_link import Link, Linkable
+from .linkable import Linkable
 
 
 class NodeField(Linkable):
@@ -15,38 +15,29 @@ class NodeField(Linkable):
                  readonly: bool = False,
                  user_data: dict[str, Any] = None,
                  ):
+        super().__init__(callback)
+
         self.label = label
         self.parent = parent
         self.attribute_type = attribute_type
-        self.callback = callback
         self.readonly = readonly
-
-        self.value: int = 0
-
-        self.__links_to: dict[str: Link] = {}
-        self.__links_from: dict[str: Link] = {}
 
         self.dpg_attr: int | str = ""
         self.dpg_field: int | str = ""
 
     def __del__(self):
-        for link in list(self.__links_to.values()):
-            link.__del__()
-        for link in list(self.__links_from.values()):
-            link.__del__()
-        del self.__links_to
-        del self.__links_from
+        super().__del__()
         dpg.delete_item(self.dpg_field)
         dpg.delete_item(self.dpg_attr)
 
+    def _on_set_value(self):
+        dpg.set_value(self.dpg_field, self.value)
+
     def __on_value_changed(self):
-
         def value_changed(sender: Any = None, app_data: Any = None, user_data: Any = None):
-            ic(self.parent + f"_{self.label}",
-               self.__links_to)
-
-            self.update(dpg.get_value(sender))
-            self.callback()
+            # ic(self.parent + f"_{self.label}",
+            #    self.__links_to)
+            self.receive_value(dpg.get_value(sender))
 
         return value_changed
 
@@ -69,26 +60,3 @@ class NodeField(Linkable):
             parent=self.dpg_attr,
             readonly=self.readonly,
         )
-
-    def update(self, value: int):
-        self.value = value
-        dpg.set_value(self.dpg_field, self.value)
-        for link in self.__links_to.values():
-            link.send(value)
-
-    def add_to_link(self, item: int | str, link: Link):
-        self.__links_to[item] = link
-        link.send(self.value)
-
-    def delete_to_link(self, item: int | str):
-        self.__links_to.pop(item)
-
-    def add_from_link(self, item: int | str, link: Link):
-        self.__links_from[item] = link
-
-    def delete_from_link(self, item: int | str):
-        self.__links_from.pop(item)
-
-    def receive_value(self, value: Any):
-        self.update(value)
-        self.callback()

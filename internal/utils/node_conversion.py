@@ -1,5 +1,5 @@
-from internal.base.base_node import Node
-from internal.base.base_node_field import NodeField
+from internal.nodeedit.base_node import Node
+from internal.nodeedit.fields.base_node_field import NodeField
 
 import dearpygui.dearpygui as dpg
 

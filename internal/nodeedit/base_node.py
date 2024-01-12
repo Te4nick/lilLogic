@@ -1,9 +1,10 @@
 from uuid import uuid4
-from typing import Any, Callable
+from typing import Any
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
-from internal.base.base_node_field import NodeField
+from .fields import Linkable
+from .fields import NodeField
 
 
 class Node:
@@ -13,7 +14,7 @@ class Node:
         if user_data is None:
             user_data = {}
 
-        self.__fields: dict[str, NodeField] = {}
+        self.__fields: dict[str, Linkable] = {}
 
         self.__build_node(user_data)
         self.build()
@@ -73,12 +74,15 @@ class Node:
                                          readonly)
 
     def set_field_value(self, label: str, value: int):
-        self.__fields[label].update(value)
+        self.__fields[label].set_value(value)
 
     def get_field_value(self, label) -> int:
-        return self.__fields[label].value
+        return self.__fields[label].get_value()
 
-    def get_field(self, item: int | str) -> NodeField:
+    def add_field(self, label: str, field: Linkable):
+        self.__fields[label] = field
+
+    def get_field(self, item: int | str) -> Linkable:
         label = item
         if item is int:
             label = dpg.get_item_label(item)

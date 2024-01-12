@@ -1,4 +1,6 @@
-from internal.base.base_node import Node
+from icecream import ic
+
+from internal.nodeedit import Node
 
 
 class LogicAnd(Node):
@@ -12,5 +14,7 @@ class LogicAnd(Node):
 
     def calculate(self):
         result = self.get_field_value("Input 1")
+        ic(result)
         result = result & self.get_field_value("Input 2")
+        ic(result)
         self.set_field_value("Output", result)

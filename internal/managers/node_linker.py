@@ -1,4 +1,4 @@
-from internal.base.base_node_link import NodeLink
+from internal.nodeedit.base_node_link import NodeLink
 from internal.utils import dpg2class
 
 
