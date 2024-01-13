@@ -38,6 +38,7 @@ class Node:
             pos=user_data["pos"] if "pos" in user_data.keys() else [0, 0]
         )
         ic(dpg.get_item_user_data(self.alias))
+        ic(f"Building {self.alias}")
 
     def __build_fields(self):
         for field in self.__fields.values():
@@ -81,9 +82,18 @@ class Node:
 
     def add_field(self, label: str, field: Linkable):
         self.__fields[label] = field
+        ic(self.__fields)
 
     def get_field(self, item: int | str) -> Linkable:
         label = item
         if item is int:
             label = dpg.get_item_label(item)
         return self.__fields[label]
+
+    def delete_field(self, label) -> bool:
+        field = self.__fields[label]
+        if field:
+            self.__fields.pop(label)
+            field.__del__()
+            return True
+        return False
