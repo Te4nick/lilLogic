@@ -56,5 +56,6 @@ class Linkable(LinkableABC):
     def receive_value(self, value: Any):
         ic()
         ic(value)
-        self.set_value(value)
-        self._callback()
+        if value != self.value:
+            self.set_value(value)
+            self._callback()

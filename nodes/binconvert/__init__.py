@@ -1,7 +1,7 @@
 from icecream import ic
 
 from internal.nodeedit import Node
-from internal.nodeedit.fields import NodeField, BoolField
+from internal.nodeedit.fields import IntField, BoolField
 
 
 __all__ = ["Splitter", "Combiner"]
@@ -38,7 +38,7 @@ class Splitter(Node):
     def build(self):
         self.__bits = 2
         self.add_field("Bits",
-                       NodeField(
+                       IntField(
                            "Bits",
                            parent=self.alias,
                            callback=self.__on_bits_changed,
@@ -96,7 +96,7 @@ class Combiner(Node):
     def build(self):
         self.__bits = 2
         self.add_field("Bits",
-                       NodeField(
+                       IntField(
                            "Bits",
                            parent=self.alias,
                            callback=self.__on_bits_changed,

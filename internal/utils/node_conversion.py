@@ -1,5 +1,5 @@
 from internal.nodeedit.base_node import Node
-from internal.nodeedit.fields.base_node_field import NodeField
+from internal.nodeedit.fields.int_field import IntField
 
 import dearpygui.dearpygui as dpg
 
@@ -15,7 +15,7 @@ def get_parent_node(item: int | str) -> Node | None:
     if isinstance(ud["class"], Node):
         return ud["class"]
 
-    elif isinstance(ud["class"], NodeField):
+    elif isinstance(ud["class"], IntField):
         parent_ud = dpg.get_item_user_data(dpg.get_item_parent(item))
 
         if parent_ud is not dict:

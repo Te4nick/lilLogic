@@ -4,7 +4,7 @@ import dearpygui.dearpygui as dpg
 from icecream import ic
 
 from .fields import Linkable
-from .fields import NodeField
+from .fields import IntField
 
 
 class Node:
@@ -54,25 +54,25 @@ class Node:
         pass
 
     def add_input(self, label: str, readonly: bool = False):
-        self.__fields[label] = NodeField(label,
-                                         self.alias,
-                                         dpg.mvNode_Attr_Input,
-                                         self.calculate,
-                                         readonly)
+        self.__fields[label] = IntField(label,
+                                        self.alias,
+                                        dpg.mvNode_Attr_Input,
+                                        self.calculate,
+                                        readonly)
 
     def add_output(self, label: str, readonly: bool = True):
-        self.__fields[label] = NodeField(label,
-                                         self.alias,
-                                         dpg.mvNode_Attr_Output,
-                                         self.calculate,
-                                         readonly)
+        self.__fields[label] = IntField(label,
+                                        self.alias,
+                                        dpg.mvNode_Attr_Output,
+                                        self.calculate,
+                                        readonly)
 
     def add_static(self, label: str, readonly: bool = False):
-        self.__fields[label] = NodeField(label,
-                                         self.alias,
-                                         dpg.mvNode_Attr_Static,
-                                         self.calculate,
-                                         readonly)
+        self.__fields[label] = IntField(label,
+                                        self.alias,
+                                        dpg.mvNode_Attr_Static,
+                                        self.calculate,
+                                        readonly)
 
     def set_field_value(self, label: str, value: int):
         self.__fields[label].set_value(value)

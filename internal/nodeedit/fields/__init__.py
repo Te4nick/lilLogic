@@ -1,3 +1,3 @@
 from .linkable import Linkable
-from .base_node_field import NodeField
+from .int_field import IntField
 from .bool_field import BoolField

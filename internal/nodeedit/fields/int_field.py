@@ -5,7 +5,7 @@ from icecream import ic
 from .linkable import Linkable
 
 
-class NodeField(Linkable):
+class IntField(Linkable):
 
     def __init__(self,
                  label: str,
