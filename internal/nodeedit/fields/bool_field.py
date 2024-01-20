@@ -1,9 +1,13 @@
-from .linkable import Linkable
+from .field import Field
 import dearpygui.dearpygui as dpg
 from typing import Any
 
+from loguru import logger
+import sys
+logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
-class BoolField(Linkable):
+
+class BoolField(Field):
     def __init__(self,
                  label: str,
                  parent: int | str = None,
@@ -12,7 +16,7 @@ class BoolField(Linkable):
                  readonly: bool = False,
                  user_data: dict[str, Any] = None,
                  ):
-        super().__init__(callback)
+        super().__init__(parent + f"_{label}", callback)
 
         self.label = label
         self.parent = parent
@@ -27,13 +31,14 @@ class BoolField(Linkable):
         dpg.delete_item(self.dpg_field)
         dpg.delete_item(self.dpg_attr)
 
-    def _on_set_value(self):
+    def _on_value_changed(self):
         dpg.set_value(self.dpg_field, bool(self.value))
 
-    def __on_value_changed(self):
+    def __on_dpg_callback(self):
         def value_changed(sender: Any = None, app_data: Any = None, user_data: Any = None):
             # ic(self.parent + f"_{self.label}",
             #    self.__links_to)
+            logger.debug(f"{self.tag}: __on_dpg_callback: value: {dpg.get_value(sender)}")
             self.receive_value(dpg.get_value(sender))
 
         return value_changed
@@ -53,7 +58,7 @@ class BoolField(Linkable):
             label=self.label,
             # width=100,
             default_value=False,
-            callback=self.__on_value_changed(),
+            callback=self.__on_dpg_callback(),
             parent=self.dpg_attr,
             # readonly=self.readonly,
         )

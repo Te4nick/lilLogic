@@ -4,28 +4,13 @@ from .link import Link
 
 
 class LinkableABC(ABC):
+
     @abstractmethod
-    def add_to_link(self, item: int | str, link: Link):
+    def add_link(self, item: int | str, link: Link, outgoing: bool):
         pass
 
     @abstractmethod
-    def delete_to_link(self, item: int | str):
-        pass
-
-    @abstractmethod
-    def add_from_link(self, item: int | str, link: Link):
-        pass
-
-    @abstractmethod
-    def delete_from_link(self, item: int | str):
-        pass
-
-    @abstractmethod
-    def set_value(self, value: Any):
-        pass
-
-    @abstractmethod
-    def get_value(self) -> Any:
+    def delete_link(self, item: int | str, outgoing: bool):
         pass
 
     @abstractmethod

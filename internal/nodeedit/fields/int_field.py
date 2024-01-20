@@ -2,10 +2,10 @@ import dearpygui.dearpygui as dpg
 from typing import Any, Callable
 from icecream import ic
 
-from .linkable import Linkable
+from .field import Field
 
 
-class IntField(Linkable):
+class IntField(Field):
 
     def __init__(self,
                  label: str,
@@ -15,7 +15,7 @@ class IntField(Linkable):
                  readonly: bool = False,
                  user_data: dict[str, Any] = None,
                  ):
-        super().__init__(callback)
+        super().__init__(parent + f"_{label}", callback)
 
         self.label = label
         self.parent = parent
@@ -30,10 +30,10 @@ class IntField(Linkable):
         dpg.delete_item(self.dpg_field)
         dpg.delete_item(self.dpg_attr)
 
-    def _on_set_value(self):
+    def _on_value_changed(self):
         dpg.set_value(self.dpg_field, self.value)
 
-    def __on_value_changed(self):
+    def __on_dpg_callback(self):
         def value_changed(sender: Any = None, app_data: Any = None, user_data: Any = None):
             # ic(self.parent + f"_{self.label}",
             #    self.__links_to)
@@ -46,17 +46,17 @@ class IntField(Linkable):
             user_data = {}
         user_data["class"] = self
         self.dpg_attr = dpg.add_node_attribute(
-            tag=self.parent + f"_{self.label}",
+            tag=self.tag,
             user_data=user_data,
             attribute_type=self.attribute_type,
             parent=self.parent,
         )
         self.dpg_field = dpg.add_input_int(
-            tag=self.parent + f"_{self.label}_Value",
+            tag=self.tag + "_Value",
             label=self.label,
             width=100,
             default_value=0,
-            callback=self.__on_value_changed(),
+            callback=self.__on_dpg_callback(),
             parent=self.dpg_attr,
             readonly=self.readonly,
         )

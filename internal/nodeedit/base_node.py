@@ -3,7 +3,7 @@ from typing import Any
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
-from .fields import Linkable
+from .fields import Field
 from .fields import IntField
 
 
@@ -14,7 +14,7 @@ class Node:
         if user_data is None:
             user_data = {}
 
-        self.__fields: dict[str, Linkable] = {}
+        self.__fields: dict[str, Field] = {}
 
         self.__build_node(user_data)
         self.build()
@@ -80,11 +80,11 @@ class Node:
     def get_field_value(self, label) -> int:
         return self.__fields[label].get_value()
 
-    def add_field(self, label: str, field: Linkable):
+    def add_field(self, label: str, field: Field):
         self.__fields[label] = field
         ic(self.__fields)
 
-    def get_field(self, item: int | str) -> Linkable:
+    def get_field(self, item: int | str) -> Field:
         label = item
         if item is int:
             label = dpg.get_item_label(item)

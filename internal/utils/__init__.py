@@ -1,7 +1,8 @@
 from typing import Any
 import dearpygui.dearpygui as dpg
+from .logger import LLLog
 
-__all__ = ["dpg2class", "get_dpg_value"]
+__all__ = ["LLLog", "dpg2class", "get_dpg_value"]
 
 
 def dpg2class(item: int | str) -> Any:
