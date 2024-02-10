@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "lillogic"
+version = "0.1.0"
+description = "Node editor with capability to create custom nodes"
+authors = ["Te4nick <te4nick@outlook.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+dearpygui = "^1.10.1"
+loguru = "^0.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -15,6 +15,7 @@ class BoolField(Field):
                  callback: Any | None = None,
                  readonly: bool = False,
                  user_data: dict[str, Any] = None,
+                 default_value: bool = False
                  ):
         super().__init__(parent + f"_{label}", callback)
 
@@ -22,6 +23,7 @@ class BoolField(Field):
         self.parent = parent
         self.attribute_type = attribute_type
         self.readonly = readonly
+        self.value = default_value
 
         self.dpg_attr: int | str = ""
         self.dpg_field: int | str = ""
@@ -57,7 +59,7 @@ class BoolField(Field):
             tag=self.parent + f"_{self.label}_Value",
             label=self.label,
             # width=100,
-            default_value=False,
+            default_value=self.value,
             callback=self.__on_dpg_callback(),
             parent=self.dpg_attr,
             # readonly=self.readonly,
