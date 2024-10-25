@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-dearpygui = "^1.10.1"
+dearpygui = "^2.0.0"
 loguru = "^0.7.2"
 
 
