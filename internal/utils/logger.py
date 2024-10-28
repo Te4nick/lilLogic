@@ -20,5 +20,3 @@ class LLLog:
     def info(msg, *args):
         rec = logging.LogRecord()
         _executor.submit(logging.info, rec, args=())
-
-

@@ -6,10 +6,9 @@ from internal.utils import dpg2class
 
 
 class NodeLink(Link):
-    def __init__(self,
-                 from_attr: int | str,
-                 to_attr: int | str,
-                 parent: int | str = None):
+    def __init__(
+        self, from_attr: int | str, to_attr: int | str, parent: int | str = None
+    ):
         self.__from_attr = from_attr
         self.__to_attr = to_attr
 
@@ -19,10 +18,9 @@ class NodeLink(Link):
         self.__from_field.add_link(self.__to_attr, self, True)
         self.__to_field.add_link(self.__from_attr, self, False)
 
-        self.__dpg_node_link = dpg.add_node_link(from_attr,
-                                                 to_attr,
-                                                 user_data={"class": self},
-                                                 parent=parent)
+        self.__dpg_node_link = dpg.add_node_link(
+            from_attr, to_attr, user_data={"class": self}, parent=parent
+        )
 
     def __del__(self):
         self.__from_field.delete_link(self.__to_attr, True)

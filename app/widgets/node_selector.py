@@ -28,28 +28,31 @@ class NodeSelector:
         return on_rescan
 
     def __build(self):
-        self.__window = dpg.add_window(label='Node Selector',
-                                       pos=[10, 60],
-                                       width=300,
-                                       height=890)
-        menu_bar = dpg.add_menu_bar(label="Node Selector MenuBar",
-                                    parent=self.__window)
-        dpg.add_menu_item(tag=f"Menu_Rescan",
-                          label="Rescan",
-                          parent=menu_bar,
-                          callback=self.__on_rescan())
-        self.__node_window = dpg.add_child_window(label="Nodes",
-                                                  parent=self.__window)
+        self.__window = dpg.add_window(
+            label="Node Selector", pos=[10, 60], width=300, height=890
+        )
+        menu_bar = dpg.add_menu_bar(label="Node Selector MenuBar", parent=self.__window)
+        dpg.add_menu_item(
+            tag=f"Menu_Rescan",
+            label="Rescan",
+            parent=menu_bar,
+            callback=self.__on_rescan(),
+        )
+        self.__node_window = dpg.add_child_window(label="Nodes", parent=self.__window)
 
     def __build_node_tree(self):
         for package_name in self.__nimport.get_package_names():
-            with dpg.tree_node(label=package_name,
-                               parent=self.__node_window,
-                               default_open=True,
-                               open_on_arrow=True):
+            with dpg.tree_node(
+                label=package_name,
+                parent=self.__node_window,
+                default_open=True,
+                open_on_arrow=True,
+            ):
                 for node_name in self.__nimport.get_package_node_names(package_name):
                     # with dpg.tree_node(label=node, parent=parent_id, default_open=True, id=node_id):
-                    dpg.add_button(label=node_name,
-                                   width=200,
-                                   height=30,
-                                   callback=self.__on_add_node(package_name, node_name))
+                    dpg.add_button(
+                        label=node_name,
+                        width=200,
+                        height=30,
+                        callback=self.__on_add_node(package_name, node_name),
+                    )

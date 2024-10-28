@@ -6,9 +6,9 @@ class BinOut(Node):
     node_type = "BinOut"
 
     def build(self):
-        self.add_field("Result", BoolField(
+        self.add_field(
             "Result",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=0
-        ))
+            BoolField(
+                "Result", parent=self.alias, callback=self.calculate, attribute_type=0
+            ),
+        )

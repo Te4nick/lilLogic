@@ -5,17 +5,31 @@ from typing import Any, Callable
 import dearpygui.dearpygui as dpg
 from loguru import logger
 import sys
-logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
+
+logger.add(
+    sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
+)
 
 
 class Field(Linkable, FieldABC):
 
     field_type = "Field"
 
-    def __init__(self, tag: str, callback: Callable[..., Any]):
+    def __init__(
+        self,
+        tag: str,
+        parent: int | str = None,
+        attribute_type: int = 0,
+        callback: Callable[..., Any] = None,
+    ):
         super().__init__(tag, callback)
 
-
+        self.dpg_attr = dpg.add_node_attribute(
+            tag=self.tag,
+            user_data={"class": self},
+            attribute_type=attribute_type,
+            parent=parent,
+        )
 
     def _on_value_changed(self):
         pass
@@ -35,6 +49,7 @@ class Field(Linkable, FieldABC):
 
     def build(self):
         pass
+
 
 class FieldAttributeType:
     input: int = 0

@@ -2,19 +2,20 @@ import dearpygui.dearpygui as dpg
 from .widgets.node_editor import NodeEditor
 from .widgets.node_selector import NodeSelector
 
+
 class App:
     def __init__(self):
         dpg.create_context()
-        dpg.create_viewport(title="Node Editor Template",
-                            width=1500,
-                            height=768)
+        dpg.create_viewport(title="Node Editor Template", width=1500, height=768)
 
         with dpg.viewport_menu_bar():
             with dpg.menu(label="File"):
                 dpg.add_menu_item(label="Save", callback=self.__on_file_save())
                 dpg.add_menu_item(label="Save As", callback=self.__on_file_save())
             dpg.add_menu_item(label="Debugger", callback=self.__on_show_debugger)
-            dpg.add_menu_item(label="Item Registry", callback=self.__on_show_item_registry)
+            dpg.add_menu_item(
+                label="Item Registry", callback=self.__on_show_item_registry
+            )
             dpg.add_menu_item(label="Close", callback=self.__on_close_program)
 
             self.node_editor = NodeEditor()
@@ -37,13 +38,13 @@ class App:
     @staticmethod
     def __on_show_item_registry(sender, data):
         dpg.show_item_registry()
-    
+
     def __on_file_save(self):
         def on_file_save(sebder, data):
             self.node_editor.print_children()
+
         return on_file_save
 
 
 if __name__ == "__main__":
     App()
-

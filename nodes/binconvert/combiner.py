@@ -18,7 +18,7 @@ class Combiner(Node):
                 f"X{bits - 1}",
                 parent=self.alias,
                 callback=self.calculate,
-                attribute_type=0
+                attribute_type=0,
             )
             self.add_field(f"X{bits - 1}", new_field)
             new_field.build()
@@ -32,28 +32,30 @@ class Combiner(Node):
 
     def build(self):
         self.__bits = 2
-        self.add_field("Bits",
-                       IntField(
-                           "Bits",
-                           parent=self.alias,
-                           callback=self.__on_bits_changed,
-                           attribute_type=2
-                       ))
+        self.add_field(
+            "Bits",
+            IntField(
+                "Bits",
+                parent=self.alias,
+                callback=self.__on_bits_changed,
+                attribute_type=2,
+            ),
+        )
 
         self.add_output("Y0")
 
-        self.add_field("X0", BoolField(
+        self.add_field(
             "X0",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=0
-        ))
-        self.add_field("X1", BoolField(
+            BoolField(
+                "X0", parent=self.alias, callback=self.calculate, attribute_type=0
+            ),
+        )
+        self.add_field(
             "X1",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=0
-        ))
+            BoolField(
+                "X1", parent=self.alias, callback=self.calculate, attribute_type=0
+            ),
+        )
 
     def calculate(self):
         result = 0

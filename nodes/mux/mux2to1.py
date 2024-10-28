@@ -9,12 +9,9 @@ class Mux2to1(Node):
     def build(self):
         self.add_input("D0")
         self.add_input("D1")
-        self.add_field("A0",
-                       BoolField(
-                           "A0",
-                           parent=self.alias,
-                           callback=self.calculate
-                       ))
+        self.add_field(
+            "A0", BoolField("A0", parent=self.alias, callback=self.calculate)
+        )
         self.add_output("Output")
 
     def calculate(self):

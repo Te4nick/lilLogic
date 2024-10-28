@@ -11,13 +11,13 @@ from .fields import IntField
 
 class Node:
     node_type: str = "BaseNode"
-    package: str = __package__.split('.')[1]
+    package: str = __package__.split(".")[1]
 
     def __init__(self, parent: int | str = 0, user_data: dict[str, Any] = None):
         if user_data is None:
             user_data = {}
 
-        self.package = self.__module__.split('.')[0]
+        self.package = self.__module__.split(".")[0]
         self.__fields: dict[str, Field] = {}
 
         self.__build_node(user_data)
@@ -39,7 +39,7 @@ class Node:
             user_data=user_data,
             parent="NodeEditor",
             label=self.node_type,
-            pos=user_data["pos"] if "pos" in user_data.keys() else [0, 0]
+            pos=user_data["pos"] if "pos" in user_data.keys() else [0, 0],
         )
         ic(dpg.get_item_user_data(self.alias))
         ic(f"Building {self.alias}")
@@ -58,25 +58,19 @@ class Node:
         pass
 
     def add_input(self, label: str, readonly: bool = False):
-        self.__fields[label] = IntField(label,
-                                        self.alias,
-                                        dpg.mvNode_Attr_Input,
-                                        self.calculate,
-                                        readonly)
+        self.__fields[label] = IntField(
+            label, self.alias, dpg.mvNode_Attr_Input, self.calculate, readonly
+        )
 
     def add_output(self, label: str, readonly: bool = True):
-        self.__fields[label] = IntField(label,
-                                        self.alias,
-                                        dpg.mvNode_Attr_Output,
-                                        self.calculate,
-                                        readonly)
+        self.__fields[label] = IntField(
+            label, self.alias, dpg.mvNode_Attr_Output, self.calculate, readonly
+        )
 
     def add_static(self, label: str, readonly: bool = False):
-        self.__fields[label] = IntField(label,
-                                        self.alias,
-                                        dpg.mvNode_Attr_Static,
-                                        self.calculate,
-                                        readonly)
+        self.__fields[label] = IntField(
+            label, self.alias, dpg.mvNode_Attr_Static, self.calculate, readonly
+        )
 
     def set_field_value(self, label: str, value: int):
         self.__fields[label].set_value(value)
@@ -101,7 +95,7 @@ class Node:
             field.__del__()
             return True
         return False
-    
+
     def serialize(self) -> dict:
         d: dict[str, Any] = {self.node_type: []}
         d_fields: dict = {}
@@ -109,12 +103,12 @@ class Node:
             d_fields[field.dpg_attr] = FieldData(
                 label=label,
                 value=field.get_value(),
-                )
+            )
         return NodeData(
             self.package,
             node_type=self.node_type,
             position=dpg.get_item_pos(self.alias),
-            fields=d_fields
+            fields=d_fields,
         ).__dict__
 
 
@@ -129,4 +123,4 @@ class NodeData:
     package: str
     node_type: str
     position: list[int]
-    fields: dict[int | str: FieldData]
+    fields: dict[int | str : FieldData]

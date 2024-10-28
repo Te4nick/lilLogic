@@ -13,7 +13,9 @@ class NodeImporter:
             ic(current_script_path)
 
             # Building the path to the project root directory
-            project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_script_path)))
+            project_root = os.path.dirname(
+                os.path.dirname(os.path.dirname(current_script_path))
+            )
             ic(project_root)
 
             # Построение пути к желаемой директории внутри проекта (например, "my_directory")
@@ -22,7 +24,7 @@ class NodeImporter:
         else:
             self.nodes_dir = path
 
-        self.node_dict: dict[str: dict[str: Node]] = {}
+        self.node_dict: dict[str : dict[str:Node]] = {}
 
         self.__build_node_dict()
 
@@ -55,7 +57,9 @@ class NodeImporter:
         ic(package_name, path, init_file_path)
 
         if os.path.exists(init_file_path):
-            pkg_loader = importlib.machinery.SourceFileLoader(package_name, init_file_path)
+            pkg_loader = importlib.machinery.SourceFileLoader(
+                package_name, init_file_path
+            )
             ic(pkg_loader.is_package(package_name))
 
             if pkg_loader.is_package(package_name):
