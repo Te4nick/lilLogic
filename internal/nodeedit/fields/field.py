@@ -2,6 +2,7 @@ from .linkable import Linkable
 from ..abc.field import FieldABC
 from typing import Any, Callable
 
+import dearpygui.dearpygui as dpg
 from loguru import logger
 import sys
 logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
@@ -10,6 +11,11 @@ logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{mess
 class Field(Linkable, FieldABC):
 
     field_type = "Field"
+
+    def __init__(self, tag: str, callback: Callable[..., Any]):
+        super().__init__(tag, callback)
+
+
 
     def _on_value_changed(self):
         pass
@@ -29,3 +35,8 @@ class Field(Linkable, FieldABC):
 
     def build(self):
         pass
+
+class FieldAttributeType:
+    input: int = 0
+    output: int = 1
+    static: int = 2

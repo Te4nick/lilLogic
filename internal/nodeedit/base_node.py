@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+import os
 from uuid import uuid4
 from typing import Any
 import dearpygui.dearpygui as dpg
@@ -9,11 +11,13 @@ from .fields import IntField
 
 class Node:
     node_type: str = "BaseNode"
+    package: str = __package__.split('.')[1]
 
     def __init__(self, parent: int | str = 0, user_data: dict[str, Any] = None):
         if user_data is None:
             user_data = {}
 
+        self.package = self.__module__.split('.')[0]
         self.__fields: dict[str, Field] = {}
 
         self.__build_node(user_data)
@@ -97,3 +101,32 @@ class Node:
             field.__del__()
             return True
         return False
+    
+    def serialize(self) -> dict:
+        d: dict[str, Any] = {self.node_type: []}
+        d_fields: dict = {}
+        for label, field in self.__fields.items():
+            d_fields[field.dpg_attr] = FieldData(
+                label=label,
+                value=field.get_value(),
+                )
+        return NodeData(
+            self.package,
+            node_type=self.node_type,
+            position=dpg.get_item_pos(self.alias),
+            fields=d_fields
+        ).__dict__
+
+
+@dataclass
+class FieldData:
+    label: str
+    value: Any
+
+
+@dataclass
+class NodeData:
+    package: str
+    node_type: str
+    position: list[int]
+    fields: dict[int | str: FieldData]

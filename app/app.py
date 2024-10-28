@@ -10,11 +10,14 @@ class App:
                             height=768)
 
         with dpg.viewport_menu_bar():
-            dpg.add_menu_item(label="Debugger", callback=self.__on__show_debugger)
+            with dpg.menu(label="File"):
+                dpg.add_menu_item(label="Save", callback=self.__on_file_save())
+                dpg.add_menu_item(label="Save As", callback=self.__on_file_save())
+            dpg.add_menu_item(label="Debugger", callback=self.__on_show_debugger)
             dpg.add_menu_item(label="Item Registry", callback=self.__on_show_item_registry)
             dpg.add_menu_item(label="Close", callback=self.__on_close_program)
 
-            node_editor = NodeEditor()
+            self.node_editor = NodeEditor()
             NodeSelector()
 
         # Main Loop
@@ -28,12 +31,17 @@ class App:
         dpg.stop_dearpygui()
 
     @staticmethod
-    def __on__show_debugger(sender, data):
+    def __on_show_debugger(sender, data):
         dpg.show_debug()
 
     @staticmethod
     def __on_show_item_registry(sender, data):
         dpg.show_item_registry()
+    
+    def __on_file_save(self):
+        def on_file_save(sebder, data):
+            self.node_editor.print_children()
+        return on_file_save
 
 
 if __name__ == "__main__":
