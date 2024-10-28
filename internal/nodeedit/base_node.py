@@ -5,8 +5,9 @@ from typing import Any
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
-from .fields import Field
+from .fields import Field, FieldData
 from .fields import IntField
+from internal.utils import get_dpg_id
 
 
 class Node:
@@ -100,22 +101,13 @@ class Node:
         d: dict[str, Any] = {self.node_type: []}
         d_fields: dict = {}
         for label, field in self.__fields.items():
-            d_fields[field.dpg_attr] = FieldData(
-                label=label,
-                value=field.get_value(),
-            )
+            d_fields[get_dpg_id(field.dpg_attr)] = field.serialize()
         return NodeData(
             self.package,
             node_type=self.node_type,
             position=dpg.get_item_pos(self.alias),
             fields=d_fields,
         ).__dict__
-
-
-@dataclass
-class FieldData:
-    label: str
-    value: Any
 
 
 @dataclass

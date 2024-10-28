@@ -1,22 +1,6 @@
-import logging
-import concurrent.futures
+from loguru import logger
+import sys
 
-LEVEL = logging.DEBUG
-
-_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-logging.basicConfig(level=LEVEL)
-log = logging.getLogger()
-
-
-class LLLog:
-
-    @staticmethod
-    def get_logger(name) -> logging.Logger:
-        logger = logging.getLogger(name)
-        logger.addHandler(logging.StreamHandler())
-        return logger
-
-    @staticmethod
-    def info(msg, *args):
-        rec = logging.LogRecord()
-        _executor.submit(logging.info, rec, args=())
+logger.add(
+    sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
+)

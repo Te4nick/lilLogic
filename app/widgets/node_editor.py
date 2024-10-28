@@ -23,7 +23,7 @@ class NodeEditor:
         children = dpg.get_item_children(
             self.dpg_node_editor
         )  # {0: links, 1: nodes, 2: ..., 3: ...}
-        print(SaveMan.dump_nodes(children[1]))
+        print(SaveMan.dump_save(children[1], children[0]))
 
     def __init_window(self):
         with dpg.window(

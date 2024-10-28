@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from typing import Any
 from internal.nodeedit.abc.link import Link
@@ -32,3 +33,15 @@ class NodeLink(Link):
 
     def get_dpg(self) -> int | str:
         return self.__dpg_node_link
+
+    def serialize(self) -> dict:
+        return NodeLinkData(
+            from_field=self.__from_attr,
+            to_field=self.__to_attr,
+        ).__dict__
+
+
+@dataclass
+class NodeLinkData:
+    from_field: int
+    to_field: int

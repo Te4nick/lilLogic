@@ -1,5 +1,7 @@
 from .linkable import Linkable
 from ..abc.field import FieldABC
+
+from dataclasses import dataclass
 from typing import Any, Callable
 
 import dearpygui.dearpygui as dpg
@@ -17,12 +19,17 @@ class Field(Linkable, FieldABC):
 
     def __init__(
         self,
-        tag: str,
+        label: str,
         parent: int | str = None,
         attribute_type: int = 0,
         callback: Callable[..., Any] = None,
+        default_value: Any = None,
     ):
-        super().__init__(tag, callback)
+        super().__init__(parent + f"_{label}", callback)
+
+        self.label = label
+        self.parent = parent
+        self.value = default_value
 
         self.dpg_attr = dpg.add_node_attribute(
             tag=self.tag,
@@ -50,8 +57,20 @@ class Field(Linkable, FieldABC):
     def build(self):
         pass
 
+    def serialize(self) -> dict:
+        return FieldData(
+            label=self.label,
+            value=self.value,
+        ).__dict__
+
 
 class FieldAttributeType:
     input: int = 0
     output: int = 1
     static: int = 2
+
+
+@dataclass
+class FieldData:
+    label: str
+    value: Any

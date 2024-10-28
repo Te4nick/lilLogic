@@ -3,6 +3,7 @@ from typing import Any, Callable
 from icecream import ic
 
 from .field import Field
+from internal.utils import logger
 
 
 class IntField(Field):
@@ -15,17 +16,16 @@ class IntField(Field):
         callback: Any | None = None,
         readonly: bool = False,
         user_data: dict[str, Any] = None,
+        default_value: int = 0,
     ):
         super().__init__(
-            tag=parent + f"_{label}",
+            label=label,
             parent=parent,
             attribute_type=attribute_type,
             callback=callback,
+            default_value=default_value,
         )
 
-        self.label = label
-        self.parent = parent
-        self.attribute_type = attribute_type
         self.readonly = readonly
 
         self.dpg_field: int | str = ""
@@ -42,8 +42,9 @@ class IntField(Field):
         def value_changed(
             sender: Any = None, app_data: Any = None, user_data: Any = None
         ):
-            # ic(self.parent + f"_{self.label}",
-            #    self.__links_to)
+            logger.debug(
+                f"{self.tag}: __on_dpg_callback: value: {dpg.get_value(sender)}"
+            )
             self.receive_value(dpg.get_value(sender))
 
         return value_changed

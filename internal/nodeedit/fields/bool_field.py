@@ -2,12 +2,7 @@ from .field import Field
 import dearpygui.dearpygui as dpg
 from typing import Any
 
-from loguru import logger
-import sys
-
-logger.add(
-    sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
-)
+from internal.utils import logger
 
 
 class BoolField(Field):
@@ -21,15 +16,12 @@ class BoolField(Field):
         default_value: bool = False,
     ):
         super().__init__(
-            tag=parent + f"_{label}",
+            label=label,
             parent=parent,
             attribute_type=attribute_type,
             callback=callback,
+            default_value=default_value,
         )
-
-        self.label = label
-        self.parent = parent
-        self.value = default_value
 
         self.dpg_field: int | str = ""
 
@@ -45,8 +37,6 @@ class BoolField(Field):
         def value_changed(
             sender: Any = None, app_data: Any = None, user_data: Any = None
         ):
-            # ic(self.parent + f"_{self.label}",
-            #    self.__links_to)
             logger.debug(
                 f"{self.tag}: __on_dpg_callback: value: {dpg.get_value(sender)}"
             )
