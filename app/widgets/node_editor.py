@@ -19,12 +19,6 @@ class NodeEditor:
 
         self.__init_window()
 
-    def print_children(self) -> None:
-        children = dpg.get_item_children(
-            self.dpg_node_editor
-        )  # {0: links, 1: nodes, 2: ..., 3: ...}
-        print(SaveMan.dump_save(children[1], children[0]))
-
     def __init_window(self):
         with dpg.window(
             tag="NodeEditorWindow",
@@ -90,3 +84,19 @@ class NodeEditor:
             self.__last_node_pos = dpg.get_item_pos(
                 dpg.get_selected_nodes("NodeEditor")[0]
             )
+
+    def get_nodes_data(
+        self, node_ids: list[int | str], link_ids: list[int | str]
+    ) -> dict:
+        nodes: list[dict] = []
+        links: list[dict] = []
+        for i in range(len(node_ids)):
+            node: Node = dpg2class(node_ids[i])
+            nodes.append(node.serialize())
+        for i in range(len(link_ids)):
+            link: NodeLink = dpg2class(link_ids[i])
+            links.append(link.serialize())
+        return {
+            "nodes": nodes,
+            "links": links,
+        }
