@@ -84,19 +84,35 @@ class NodeEditor:
             self.__last_node_pos = dpg.get_item_pos(
                 dpg.get_selected_nodes("NodeEditor")[0]
             )
+    
+    def clear_canvas(self) -> None:
+        children = dpg.get_item_children(
+            self.dpg_node_editor
+        )  # {0: links, 1: nodes, 2: ..., 3: ...}
+        print(children)
+        for i in range(len(children[0])):
+            link: NodeLink = dpg2class(children[0][i])
+            print(link)
+            link.__del__()
+        for i in range(len(children[1])):
+            node: Node = dpg2class(children[1][i])
+            print(node)
+            node.__del__()
 
-    def get_nodes_data(
-        self, node_ids: list[int | str], link_ids: list[int | str]
-    ) -> dict:
+
+    def get_nodes_data(self) -> dict:
+        children = dpg.get_item_children(
+            self.dpg_node_editor
+        )  # {0: links, 1: nodes, 2: ..., 3: ...}
         nodes: list[dict] = []
         links: list[dict] = []
-        for i in range(len(node_ids)):
-            node: Node = dpg2class(node_ids[i])
+        for i in range(len(children[1])):
+            node: Node = dpg2class(children[1][i])
             nodes.append(node.serialize())
-        for i in range(len(link_ids)):
-            link: NodeLink = dpg2class(link_ids[i])
+        for i in range(len(children[0])):
+            link: NodeLink = dpg2class(children[0][i])
             links.append(link.serialize())
         return {
             "nodes": nodes,
             "links": links,
-        }
+        }            

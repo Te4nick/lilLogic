@@ -21,7 +21,7 @@ class App:
             dpg.add_menu_item(label="Close", callback=self.__on_close_program)
 
             self.node_editor = NodeEditor()
-            NodeSelector()
+            self.node_selector = NodeSelector()
 
         # Main Loop
         dpg.setup_dearpygui()
@@ -52,7 +52,9 @@ class App:
             save_data = SaveMan.read_save(
                 SaveMan.get_default_save_path() / "test_save.json"
             )
+            self.node_editor.clear_canvas()
             print(save_data)
+            self.node_selector.add_from_data(save_data)
 
         return on_file_open
 

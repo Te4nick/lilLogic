@@ -10,9 +10,17 @@ from .fields import IntField
 from internal.utils import get_dpg_id
 
 
+@dataclass
+class NodeData:
+    package: str
+    node_type: str
+    position: list[int]
+    fields: dict[int | str : FieldData]
+
+
 class Node:
     node_type: str = "BaseNode"
-    package: str = __package__.split(".")[1]
+    package: str = __module__.split(".")[0]
 
     def __init__(self, parent: int | str = 0, user_data: dict[str, Any] = None):
         if user_data is None:
@@ -49,8 +57,17 @@ class Node:
         for field in self.__fields.values():
             field.build()
 
-    # def __alias2id(self, alias):
-    #     pass
+    @classmethod
+    def from_data(cls, data: NodeData, parent: int | str = 0) -> "Node":
+        cls.package = cls.__module__.split(".")[0]
+        if data.package != cls.package or data.node_type != cls.node_type:
+            raise ValueError(
+                f"expected: package={cls.package}, node_type={cls.node_type}, got package={data.package}, node_type={data.node_type}"
+            )
+
+        node: Node = cls(parent=parent, user_data={"pos": data.position})
+        for field in data.fields.values():
+            node.set_field_value(**field)
 
     def calculate(self):
         pass
@@ -98,9 +115,8 @@ class Node:
         return False
 
     def serialize(self) -> dict:
-        d: dict[str, Any] = {self.node_type: []}
         d_fields: dict = {}
-        for label, field in self.__fields.items():
+        for _, field in self.__fields.items():
             d_fields[get_dpg_id(field.dpg_attr)] = field.serialize()
         return NodeData(
             self.package,
@@ -108,11 +124,3 @@ class Node:
             position=dpg.get_item_pos(self.alias),
             fields=d_fields,
         ).__dict__
-
-
-@dataclass
-class NodeData:
-    package: str
-    node_type: str
-    position: list[int]
-    fields: dict[int | str : FieldData]

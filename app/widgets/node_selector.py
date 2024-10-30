@@ -2,6 +2,7 @@ import dearpygui.dearpygui as dpg
 from icecream import ic
 
 from internal.managers import NodeImporter
+from internal.nodeedit import Node, NodeData, FieldData
 
 
 class NodeSelector:
@@ -14,7 +15,7 @@ class NodeSelector:
     def __on_add_node(self, package_name: str, node_name: str):
         def on_add_node(sender, app_data):
             ic("Entering __on_add_node", package_name, node_name)
-            node_class = self.__nimport.get_node_class(package_name, node_name)
+            node_class: Node = self.__nimport.get_node_class(package_name, node_name)
             node_class()
 
         return on_add_node
@@ -56,3 +57,9 @@ class NodeSelector:
                         height=30,
                         callback=self.__on_add_node(package_name, node_name),
                     )
+
+    def add_from_data(self, data: dict) -> None:
+        for node_data in data["nodes"]:
+            node: Node = self.__nimport.get_node_class(node_data["package"], node_data["node_type"])
+            print(node)
+            node.from_data(NodeData(**node_data))
