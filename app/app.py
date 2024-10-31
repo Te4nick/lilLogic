@@ -55,6 +55,7 @@ class App:
             self.node_editor.clear_canvas()
             print(save_data)
             self.node_selector.add_from_data(save_data.nodes)
+            self.node_editor.create_links(save_data.links)
 
         return on_file_open
 

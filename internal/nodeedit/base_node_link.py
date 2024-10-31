@@ -1,15 +1,14 @@
-from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
+from pydantic import BaseModel
 from typing import Any
 from internal.nodeedit.abc.link import Link
 from internal.nodeedit.abc.linkableabc import LinkableABC
 from internal.utils import dpg2class
 
 
-@dataclass
-class NodeLinkData:
-    from_field: int
-    to_field: int
+class NodeLinkData(BaseModel):
+    from_field: str
+    to_field: str
 
 
 class NodeLink(Link):
@@ -42,6 +41,6 @@ class NodeLink(Link):
 
     def serialize(self) -> NodeLinkData:
         return NodeLinkData(
-            from_field=self.__from_attr,
-            to_field=self.__to_attr,
+            from_field=dpg.get_item_alias(self.__from_attr),
+            to_field=dpg.get_item_alias(self.__to_attr),
         )

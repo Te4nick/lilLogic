@@ -3,7 +3,7 @@ import os
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
-from internal.nodeedit import NodeLink, Node
+from internal.nodeedit import NodeLink, Node, NodeLinkData
 from internal.managers import SaveData
 from internal.utils import dpg2class
 
@@ -112,3 +112,7 @@ class NodeEditor:
             link: NodeLink = dpg2class(children[0][i])
             links.append(link.serialize())
         return SaveData(nodes=nodes, links=links)
+    
+    def create_links(self, links: list[NodeLinkData]) -> None:
+        for link in links:
+            NodeLink(link.from_field, link.to_field, parent="NodeEditor")
