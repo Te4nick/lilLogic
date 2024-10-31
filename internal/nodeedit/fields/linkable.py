@@ -5,7 +5,10 @@ from typing import Any, Callable
 
 from loguru import logger
 import sys
-logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
+
+logger.add(
+    sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
+)
 
 
 class Linkable(LinkableABC):
@@ -16,8 +19,8 @@ class Linkable(LinkableABC):
         self.tag = tag
         self.value = 0
         self._callback = callback
-        self.__links_to: dict[str: Link] = {}
-        self.__links_from: dict[str: Link] = {}
+        self.__links_to: dict[str:Link] = {}
+        self.__links_from: dict[str:Link] = {}
 
     def __del__(self):
         for link in list(self.__links_to.values()):

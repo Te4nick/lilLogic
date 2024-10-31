@@ -10,7 +10,11 @@ readme = "README.md"
 python = "^3.10"
 dearpygui = "^2.0.0"
 loguru = "^0.7.2"
+pydantic = "^2.9.2"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
 
 [build-system]
 requires = ["poetry-core"]

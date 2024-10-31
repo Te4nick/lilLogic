@@ -3,7 +3,7 @@ import glob
 
 from icecream import ic
 import importlib.machinery
-from internal.nodeedit.base_node import Node
+from internal.nodeedit import Node
 
 
 class NodeImporter:
@@ -13,7 +13,9 @@ class NodeImporter:
             ic(current_script_path)
 
             # Building the path to the project root directory
-            project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_script_path)))
+            project_root = os.path.dirname(
+                os.path.dirname(os.path.dirname(current_script_path))
+            )
             ic(project_root)
 
             # Построение пути к желаемой директории внутри проекта (например, "my_directory")
@@ -22,17 +24,17 @@ class NodeImporter:
         else:
             self.nodes_dir = path
 
-        self.node_dict: dict[str: dict[str: Node]] = {}
+        self.node_dict: dict[str : dict[str:Node]] = {}
 
         self.__build_node_dict()
 
     def __build_node_dict(self):
-        package_names = self.get_node_packages()
+        package_names = self.get_packages()
         for name in package_names:
-            self.get_package_nodes(name)
+            self.get_nodes(name)
         return
 
-    def get_node_packages(self, path: str | None = None) -> list[str]:
+    def get_packages(self, path: str | None = None) -> list[str]:
         if path is None:
             path = self.nodes_dir
 
@@ -45,7 +47,7 @@ class NodeImporter:
 
         return ic(list(self.node_dict.keys()))
 
-    def get_package_nodes(self, package_name: str, path: str | None = None):
+    def get_nodes(self, package_name: str, path: str | None = None):
         if path is None:
             path = self.nodes_dir
 
@@ -55,7 +57,9 @@ class NodeImporter:
         ic(package_name, path, init_file_path)
 
         if os.path.exists(init_file_path):
-            pkg_loader = importlib.machinery.SourceFileLoader(package_name, init_file_path)
+            pkg_loader = importlib.machinery.SourceFileLoader(
+                package_name, init_file_path
+            )
             ic(pkg_loader.is_package(package_name))
 
             if pkg_loader.is_package(package_name):
@@ -84,8 +88,8 @@ class NodeImporter:
 if __name__ == "__main__":
     ic.configureOutput(includeContext=True)
     nimport = NodeImporter()
-    npkgs = nimport.get_node_packages()
+    npkgs = nimport.get_packages()
     for pkg in npkgs:
-        ic(pkg, nimport.get_package_nodes(pkg))
+        ic(pkg, nimport.get_nodes(pkg))
 
     ic(nimport.node_dict)

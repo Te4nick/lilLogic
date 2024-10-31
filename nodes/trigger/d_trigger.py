@@ -13,14 +13,14 @@ class DTrigger(Node):
             "D",
             parent=self.alias,
             callback=self.calculate,
-            attribute_type=0
+            attribute_type=0,
         )
         self.add_field("D", d_in)
         e_in = BoolField(
             "C",
             parent=self.alias,
             callback=self.calculate,
-            attribute_type=0
+            attribute_type=0,
         )
         self.add_field("C", e_in)
         q_out = BoolField(
@@ -28,7 +28,7 @@ class DTrigger(Node):
             parent=self.alias,
             callback=self.calculate,
             attribute_type=1,
-            readonly=True
+            readonly=True,
         )
         self.add_field("Q", q_out)
         not_q_out = BoolField(
@@ -37,7 +37,7 @@ class DTrigger(Node):
             callback=self.calculate,
             attribute_type=1,
             readonly=True,
-            default_value=True
+            default_value=True,
         )
         self.add_field("NOT Q", not_q_out)
         self.__q = False
