@@ -6,6 +6,12 @@ from internal.nodeedit.abc.linkableabc import LinkableABC
 from internal.utils import dpg2class
 
 
+@dataclass
+class NodeLinkData:
+    from_field: int
+    to_field: int
+
+
 class NodeLink(Link):
     def __init__(
         self, from_attr: int | str, to_attr: int | str, parent: int | str = None
@@ -34,14 +40,8 @@ class NodeLink(Link):
     def get_dpg(self) -> int | str:
         return self.__dpg_node_link
 
-    def serialize(self) -> dict:
+    def serialize(self) -> NodeLinkData:
         return NodeLinkData(
             from_field=self.__from_attr,
             to_field=self.__to_attr,
-        ).__dict__
-
-
-@dataclass
-class NodeLinkData:
-    from_field: int
-    to_field: int
+        )

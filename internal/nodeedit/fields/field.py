@@ -6,11 +6,17 @@ from typing import Any, Callable
 
 import dearpygui.dearpygui as dpg
 from loguru import logger
+from pydantic import BaseModel
 import sys
 
 logger.add(
     sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
 )
+
+
+class FieldData(BaseModel):
+    label: str
+    value: Any
 
 
 class Field(Linkable, FieldABC):
@@ -57,20 +63,14 @@ class Field(Linkable, FieldABC):
     def build(self):
         pass
 
-    def serialize(self) -> dict:
+    def serialize(self) -> FieldData:
         return FieldData(
             label=self.label,
             value=self.value,
-        ).__dict__
+        )
 
 
 class FieldAttributeType:
     input: int = 0
     output: int = 1
     static: int = 2
-
-
-@dataclass
-class FieldData:
-    label: str
-    value: Any

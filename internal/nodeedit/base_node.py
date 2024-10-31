@@ -1,30 +1,38 @@
-from dataclasses import dataclass
-import os
-from uuid import uuid4
+from uuid import uuid4, UUID
 from typing import Any
 import dearpygui.dearpygui as dpg
 from icecream import ic
+from pydantic import BaseModel
 
 from .fields import Field, FieldData
 from .fields import IntField
-from internal.utils import get_dpg_id
 
 
-@dataclass
-class NodeData:
+class NodeData(BaseModel):
     package: str
     node_type: str
+    id: UUID
     position: list[int]
-    fields: dict[int | str : FieldData]
+    fields: list[FieldData]
 
 
 class Node:
     node_type: str = "BaseNode"
     package: str = __module__.split(".")[0]
 
-    def __init__(self, parent: int | str = 0, user_data: dict[str, Any] = None):
+    def __init__(
+        self,
+        id: UUID | None = None,
+        parent: int | str = 0,
+        user_data: dict[str, Any] = None,
+    ):
         if user_data is None:
             user_data = {}
+
+        if id is None:
+            self.__id = uuid4()
+        else:
+            self.__id = id
 
         self.package = self.__module__.split(".")[0]
         self.__fields: dict[str, Field] = {}
@@ -41,10 +49,10 @@ class Node:
         del self.__fields
         dpg.delete_item(self.alias)
 
-    def __build_node(self, user_data):
+    def __build_node(self, user_data: dict[str, Any]):
         user_data["class"] = self
         self.alias = dpg.add_node(
-            tag=str(uuid4()) + "_" + self.node_type + "_Node",  # Unique node alias
+            tag=str(self.__id) + "_" + self.node_type + "_Node",  # Unique node alias
             user_data=user_data,
             parent="NodeEditor",
             label=self.node_type,
@@ -65,9 +73,9 @@ class Node:
                 f"expected: package={cls.package}, node_type={cls.node_type}, got package={data.package}, node_type={data.node_type}"
             )
 
-        node: Node = cls(parent=parent, user_data={"pos": data.position})
-        for field in data.fields.values():
-            node.set_field_value(**field)
+        node: Node = cls(id=data.id, parent=parent, user_data={"pos": data.position})
+        for field in data.fields:
+            node.set_field_value(field.label, field.value)
 
     def calculate(self):
         pass
@@ -114,13 +122,14 @@ class Node:
             return True
         return False
 
-    def serialize(self) -> dict:
-        d_fields: dict = {}
-        for _, field in self.__fields.items():
-            d_fields[get_dpg_id(field.dpg_attr)] = field.serialize()
+    def serialize(self) -> NodeData:
+        fields: list[FieldData] = []
+        for field in self.__fields.values():
+            fields.append(field.serialize())
         return NodeData(
-            self.package,
+            package=self.package,
             node_type=self.node_type,
+            id=self.__id,
             position=dpg.get_item_pos(self.alias),
-            fields=d_fields,
-        ).__dict__
+            fields=fields,
+        )

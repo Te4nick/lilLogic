@@ -1,16 +1,13 @@
-from dataclasses import dataclass
 import os
 from pathlib import Path
-import json
 
-from internal.nodeedit import Node, NodeLink, NodeData, NodeLinkData, FieldData
-from internal.utils import dpg2class
+from internal.nodeedit import NodeData, NodeLinkData, FieldData
+from pydantic import BaseModel
 
 
-@dataclass
-class SaveData:
-    nodes: list[dict]  # NodeData
-    links: list[dict]  # NodeLinkData
+class SaveData(BaseModel):
+    nodes: list[NodeData]
+    links: list[NodeLinkData]
 
 
 class SaveMan:
@@ -36,19 +33,18 @@ class SaveMan:
         return save_dir / "lilLogic"
 
     @classmethod
-    def write_save(cls, name: str, data: dict) -> None:
-        cls._validate_save(data)
+    def write_save(cls, name: str, save_data: SaveData) -> None:
+        print(save_data)
         save_dir = cls.get_default_save_path()
         os.makedirs(save_dir, exist_ok=True)
 
         with open(save_dir / f"{name}.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+            f.write(save_data.model_dump_json(indent=4))
 
     @classmethod
-    def read_save(cls, path: str) -> dict:
-        data: dict
+    def read_save(cls, path: str) -> SaveData:
+        save_data: SaveData
         with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+            save_data = SaveData.model_validate_json(f.read())
 
-        cls._validate_save(data)
-        return data
+        return save_data

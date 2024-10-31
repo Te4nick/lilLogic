@@ -2,7 +2,7 @@ import dearpygui.dearpygui as dpg
 from icecream import ic
 
 from internal.managers import NodeImporter
-from internal.nodeedit import Node, NodeData, FieldData
+from internal.nodeedit import Node, NodeData
 
 
 class NodeSelector:
@@ -58,8 +58,11 @@ class NodeSelector:
                         callback=self.__on_add_node(package_name, node_name),
                     )
 
-    def add_from_data(self, data: dict) -> None:
-        for node_data in data["nodes"]:
-            node: Node = self.__nimport.get_node_class(node_data["package"], node_data["node_type"])
+    def add_from_data(self, nodes_data: list[NodeData]) -> None:
+        for node_data in nodes_data:
+            node: Node = self.__nimport.get_node_class(
+                node_data.package,
+                node_data.node_type,
+            )
             print(node)
-            node.from_data(NodeData(**node_data))
+            node.from_data(node_data)

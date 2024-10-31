@@ -4,7 +4,7 @@ import dearpygui.dearpygui as dpg
 from icecream import ic
 
 from internal.nodeedit import NodeLink, Node
-from internal.managers import SaveMan
+from internal.managers import SaveData
 from internal.utils import dpg2class
 
 
@@ -84,7 +84,7 @@ class NodeEditor:
             self.__last_node_pos = dpg.get_item_pos(
                 dpg.get_selected_nodes("NodeEditor")[0]
             )
-    
+
     def clear_canvas(self) -> None:
         children = dpg.get_item_children(
             self.dpg_node_editor
@@ -99,8 +99,7 @@ class NodeEditor:
             print(node)
             node.__del__()
 
-
-    def get_nodes_data(self) -> dict:
+    def get_nodes_data(self) -> SaveData:
         children = dpg.get_item_children(
             self.dpg_node_editor
         )  # {0: links, 1: nodes, 2: ..., 3: ...}
@@ -112,7 +111,4 @@ class NodeEditor:
         for i in range(len(children[0])):
             link: NodeLink = dpg2class(children[0][i])
             links.append(link.serialize())
-        return {
-            "nodes": nodes,
-            "links": links,
-        }            
+        return SaveData(nodes=nodes, links=links)

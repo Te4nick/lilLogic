@@ -54,7 +54,7 @@ class App:
             )
             self.node_editor.clear_canvas()
             print(save_data)
-            self.node_selector.add_from_data(save_data)
+            self.node_selector.add_from_data(save_data.nodes)
 
         return on_file_open
 
