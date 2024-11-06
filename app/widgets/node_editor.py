@@ -14,29 +14,23 @@ def callback_close_window(sender):
 
 
 class NodeEditor:
-    def __init__(self):
+    def __init__(self, parent):
         self.__last_node_pos = [0, 0]
 
-        self.__init_window()
+        self.__init_window(parent)
 
-    def __init_window(self):
-        with dpg.window(
-            tag="NodeEditorWindow",
-            label="NodeEditor",
-            width=1000,
-            height=700,
-            pos=[50, 50],
-            menubar=True,
-            on_close=callback_close_window,
-        ):
+    def __init_window(self, parent):
 
-            with dpg.group(horizontal=True):
-                dpg.add_text("Status:")
-                dpg.add_text(tag="InfoBar")
+            # with dpg.group(horizontal=True, parent=parent):
+            #     dpg.add_text("Status:")
+            #     dpg.add_text(tag="InfoBar")
 
             # Add node editor to the window
             self.dpg_node_editor = dpg.add_node_editor(
+                parent=parent,
                 tag="NodeEditor",
+                minimap=True,
+                minimap_location=dpg.mvNodeMiniMap_Location_BottomLeft,
                 # Function call for updating all nodes if a new link is created
                 callback=self.__on_link_callback(),
                 # Function call for updating if a link is destroyed

@@ -9,7 +9,7 @@ class NodeSelector:
     def __init__(self, parent: int | str = None):
         self.__nimport = NodeImporter()
 
-        self.__build()
+        self.__build(parent)
         self.__build_node_tree()
 
     def __on_add_node(self, package_name: str, node_name: str):
@@ -28,18 +28,22 @@ class NodeSelector:
 
         return on_rescan
 
-    def __build(self):
-        self.__window = dpg.add_window(
-            label="Node Selector", pos=[10, 60], width=300, height=890
+    def __build(self, parent = None):
+        self.__window = dpg.add_child_window(
+            label="Node Selector", parent=parent, menubar=True, border=False
         )
-        menu_bar = dpg.add_menu_bar(label="Node Selector MenuBar", parent=self.__window)
-        dpg.add_menu_item(
-            tag=f"Menu_Rescan",
-            label="Rescan",
-            parent=menu_bar,
-            callback=self.__on_rescan(),
-        )
-        self.__node_window = dpg.add_child_window(label="Nodes", parent=self.__window)
+        
+        with dpg.menu_bar(parent=self.__window):
+            dpg.add_menu_item(label="Rescan", callback=self.__on_rescan())
+        
+        #menu_bar = dpg.add_tab_bar(label="Node Selector MenuBar", parent=self.__window)
+        # dpg.add_tab_button(
+        #     tag=f"Menu_Rescan",
+        #     label="Rescan",
+        #     parent=menu_bar,
+        #     callback=self.__on_rescan(),
+        # )
+        self.__node_window = dpg.add_child_window(label="Nodes", parent=self.__window, border=False)
 
     def __build_node_tree(self):
         for package_name in self.__nimport.get_package_names():

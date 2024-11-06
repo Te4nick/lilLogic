@@ -1,4 +1,5 @@
 import dearpygui.dearpygui as dpg
+from dearpygui import demo as dpg_demo
 from .widgets.node_editor import NodeEditor
 from .widgets.node_selector import NodeSelector
 from internal.managers import SaveMan
@@ -14,14 +15,29 @@ class App:
                 dpg.add_menu_item(label="Save", callback=self.__on_file_save())
                 dpg.add_menu_item(label="Save As", callback=self.__on_file_save())
                 dpg.add_menu_item(label="Open", callback=self.__on_file_open())
-            dpg.add_menu_item(label="Debugger", callback=self.__on_show_debugger)
-            dpg.add_menu_item(
-                label="Item Registry", callback=self.__on_show_item_registry
-            )
+            
+            with dpg.menu(label="Help"):
+                dpg.add_menu_item(label="Debugger", callback=self.__on_show_debugger)
+                dpg.add_menu_item(label="Item Registry", callback=self.__on_show_item_registry)
+                dpg.add_menu_item(label="Demo", callback=dpg_demo.show_demo)
+            
             dpg.add_menu_item(label="Close", callback=self.__on_close_program)
+        
+        main_window = dpg.add_window(
+            tag="TableWindow",
+            label="Table",
+            menubar=True,
+            autosize=True,
+        )
+        dpg.set_primary_window(main_window, True)
 
-            self.node_editor = NodeEditor()
-            self.node_selector = NodeSelector()
+        table = dpg.add_table(parent=main_window, resizable=True, header_row=False)
+        dpg.add_table_column(parent=table)
+        dpg.add_table_column(parent=table)
+        row = dpg.add_table_row(parent=table)
+
+        self.node_editor = NodeEditor(dpg.add_child_window(parent=row))
+        self.node_selector = NodeSelector(dpg.add_child_window(parent=row))
 
         # Main Loop
         dpg.setup_dearpygui()
