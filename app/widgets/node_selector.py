@@ -28,22 +28,28 @@ class NodeSelector:
 
         return on_rescan
 
-    def __build(self, parent = None):
+    def __build(self, parent=None):
         self.__window = dpg.add_child_window(
-            label="Node Selector", parent=parent, menubar=True, border=False
+            tag="NodeSelector",
+            parent=parent,
+            menubar=True,
+            border=False,
+            user_data={"class": self},
         )
-        
+
         with dpg.menu_bar(parent=self.__window):
             dpg.add_menu_item(label="Rescan", callback=self.__on_rescan())
-        
-        #menu_bar = dpg.add_tab_bar(label="Node Selector MenuBar", parent=self.__window)
+
+        # menu_bar = dpg.add_tab_bar(label="Node Selector MenuBar", parent=self.__window)
         # dpg.add_tab_button(
         #     tag=f"Menu_Rescan",
         #     label="Rescan",
         #     parent=menu_bar,
         #     callback=self.__on_rescan(),
         # )
-        self.__node_window = dpg.add_child_window(label="Nodes", parent=self.__window, border=False)
+        self.__node_window = dpg.add_child_window(
+            label="Nodes", parent=self.__window, border=False
+        )
 
     def __build_node_tree(self):
         for package_name in self.__nimport.get_package_names():
