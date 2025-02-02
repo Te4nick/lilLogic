@@ -1,17 +1,23 @@
-[tool.poetry]
+[project]
 name = "lillogic"
 version = "0.1.0"
 description = "Node editor with capability to create custom nodes"
-authors = ["Te4nick <te4nick@outlook.com>"]
+authors = [
+    {name = "Te4nick", email = "te4nick@outlook.com"}
+]
 license = "MIT"
 readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dearpygui>=2.0.0",
+    "loguru>=0.7.2",
+    "pydantic>=2.9.2",
+    "icecream>=2.1.4",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-dearpygui = "^2.0.0"
-loguru = "^0.7.2"
-pydantic = "^2.9.2"
-
+[tool.poetry]
+requires-poetry = ">=2.0"
+package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
@@ -19,3 +25,4 @@ black = "^24.10.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
