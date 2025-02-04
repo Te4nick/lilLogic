@@ -53,6 +53,9 @@ class NodeEditor:
 
     @staticmethod
     def __on_delete_item_callback(_):
+        for selected_link in dpg.get_selected_links("NodeEditor"):
+            ic(dpg.get_item_label(selected_link))
+            dpg2class(selected_link).__del__()
         for selected_node in dpg.get_selected_nodes("NodeEditor"):
             ic(dpg.get_item_label(selected_node))
             dpg2class(selected_node).__del__()

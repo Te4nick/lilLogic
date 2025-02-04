@@ -4,13 +4,8 @@ from ..abc.field import FieldABC
 from typing import Any, Callable
 
 import dearpygui.dearpygui as dpg
-from loguru import logger
+from internal.utils import logger
 from pydantic import BaseModel
-import sys
-
-logger.add(
-    sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
-)
 
 
 class FieldData(BaseModel):

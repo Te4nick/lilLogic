@@ -3,14 +3,7 @@ from internal.nodeedit.fields import Field, BoolField
 import dearpygui.dearpygui as dpg
 from typing import Any
 
-from loguru import logger
-import sys
-
-logger.add(
-    sys.stdout,
-    colorize=True,
-    format="<green>{time}</green> <level>{message}</level>",
-)
+from internal.utils import logger
 
 
 class Segment7Display(Node):
@@ -84,21 +77,6 @@ class ColorField(Field):
             else:
                 self.__segments[-1 - i].off()
             tmp_val >>= 1
-
-    def __on_dpg_callback(self):
-        def value_changed(
-            sender: Any = None,
-            app_data: Any = None,
-            user_data: Any = None,
-        ):
-            # ic(self.parent + f"_{self.label}",
-            #    self.__links_to)
-            logger.debug(
-                f"{self.tag}: __on_dpg_callback: value: {dpg.get_value(sender)}"
-            )
-            self.receive_value(dpg.get_value(sender))
-
-        return value_changed
 
     def build(self, user_data: dict[str, Any] = None):
         if user_data is None:

@@ -1,14 +1,7 @@
-from icecream import ic
-
 from ..abc.linkableabc import LinkableABC, Link
 from typing import Any, Callable
 
-from loguru import logger
-import sys
-
-logger.add(
-    sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>"
-)
+from internal.utils import logger
 
 
 class Linkable(LinkableABC):
