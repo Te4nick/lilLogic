@@ -54,7 +54,7 @@ class IntField(Field):
             tag=self.tag + "_Value",
             label=self.label,
             width=100,
-            default_value=0,
+            default_value=self.value,
             callback=self.__on_dpg_callback(),
             parent=self.dpg_attr,
             readonly=self.readonly,

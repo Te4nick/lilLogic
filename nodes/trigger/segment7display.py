@@ -19,7 +19,6 @@ class Segment7Display(Node):
     def build(self):
         for pin in ["A", "B", "C", "D", "E", "F", "G", "DP"]:
             self.add_field(
-                pin,
                 BoolField(
                     pin,
                     parent=self.alias,
@@ -28,7 +27,7 @@ class Segment7Display(Node):
                 ),
             )
 
-        self.add_field("COLOR", ColorField("COLOR", parent=self.alias))
+        self.add_field(ColorField("COLOR", parent=self.alias))
 
     def calculate(self):
         res = 0
@@ -50,7 +49,13 @@ class ColorField(Field):
         user_data: dict[str, Any] = None,
         default_value: int = False,
     ):
-        super().__init__(parent + f"_{label}", callback)
+        super().__init__(
+            label=label,
+            parent=parent,
+            attribute_type=2,
+            callback=callback,
+            default_value=default_value,
+        )
 
         self.label = label
         self.parent = parent
@@ -59,7 +64,6 @@ class ColorField(Field):
 
         self.__segments: list[DisplaySegment] = []
 
-        self.dpg_attr: int | str = ""
         self.dpg_field: int | str = ""
         self.dpg_group: int | str = ""
         self.dpg_plot: int | str = ""
@@ -100,12 +104,6 @@ class ColorField(Field):
         if user_data is None:
             user_data = {}
         user_data["class"] = self
-        self.dpg_attr = dpg.add_node_attribute(
-            tag=self.parent + f"_{self.label}",
-            user_data=user_data,
-            attribute_type=2,
-            parent=self.parent,
-        )
         self.dpg_group = dpg.add_group(parent=self.dpg_attr)
         self.dpg_plot = dpg.add_plot(
             parent=self.dpg_group,
@@ -138,8 +136,10 @@ class ColorField(Field):
         dpg.set_axis_limits(axis=default_x, ymin=0, ymax=7)
         dpg.set_axis_limits(axis=default_y, ymin=0, ymax=9)
 
-        dpg.add_vline_series(x=[n for n in range(7)], parent=default_x)
-        dpg.add_hline_series(x=[n for n in range(9)], parent=default_y)
+        dpg.add_inf_line_series(x=[n for n in range(7)], parent=default_x)
+        dpg.add_inf_line_series(
+            x=[n for n in range(9)], parent=default_y, horizontal=True
+        )
 
         # dpg.draw_text(pos=[0.5, 11], text="GAME OVER", size=1, parent=self.dpg_plot)  # TEXT
 

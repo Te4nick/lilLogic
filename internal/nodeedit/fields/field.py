@@ -1,7 +1,6 @@
 from .linkable import Linkable
 from ..abc.field import FieldABC
 
-from dataclasses import dataclass
 from typing import Any, Callable
 
 import dearpygui.dearpygui as dpg

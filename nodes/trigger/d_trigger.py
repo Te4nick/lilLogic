@@ -9,37 +9,41 @@ class DTrigger(Node):
     node_type = "D-Trigger"
 
     def build(self):
-        d_in = BoolField(
-            "D",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=0,
+        self.add_field(
+            BoolField(
+                "D",
+                parent=self.alias,
+                callback=self.calculate,
+                attribute_type=0,
+            ),
         )
-        self.add_field("D", d_in)
-        e_in = BoolField(
-            "C",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=0,
+        self.add_field(
+            BoolField(
+                "C",
+                parent=self.alias,
+                callback=self.calculate,
+                attribute_type=0,
+            ),
         )
-        self.add_field("C", e_in)
-        q_out = BoolField(
-            "Q",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=1,
-            readonly=True,
+        self.add_field(
+            BoolField(
+                "Q",
+                parent=self.alias,
+                callback=self.calculate,
+                attribute_type=1,
+                readonly=True,
+            ),
         )
-        self.add_field("Q", q_out)
-        not_q_out = BoolField(
-            "NOT Q",
-            parent=self.alias,
-            callback=self.calculate,
-            attribute_type=1,
-            readonly=True,
-            default_value=True,
+        self.add_field(
+            BoolField(
+                "NOT Q",
+                parent=self.alias,
+                callback=self.calculate,
+                attribute_type=1,
+                readonly=True,
+                default_value=True,
+            ),
         )
-        self.add_field("NOT Q", not_q_out)
         self.__q = False
 
     def calculate(self):

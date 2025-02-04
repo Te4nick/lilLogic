@@ -7,7 +7,6 @@ class BinIn(Node):
 
     def build(self):
         self.add_field(
-            "Value",
             BoolField(
                 "Value", parent=self.alias, callback=self.calculate, attribute_type=1
             ),

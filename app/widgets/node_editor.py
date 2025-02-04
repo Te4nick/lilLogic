@@ -1,5 +1,3 @@
-import os
-
 import dearpygui.dearpygui as dpg
 from icecream import ic
 
@@ -45,11 +43,13 @@ class NodeEditor:
     @staticmethod
     def __on_link_callback(_, app_data):
         NodeLink(app_data[0], app_data[1], parent="NodeEditor")
+        pass
 
     @staticmethod
     def __on_delink_callback(_, app_data):  # app_data -> link_id
         ic(app_data)
         dpg2class(app_data).__del__()
+        pass
 
     @staticmethod
     def __on_delete_item_callback(_):

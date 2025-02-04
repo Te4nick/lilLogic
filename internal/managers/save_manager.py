@@ -20,8 +20,9 @@ class SaveMan:
         else:
             save_dir = save_dir / "documents"
 
+        save_dir = save_dir / "lilLogic"
         os.makedirs(save_dir, exist_ok=True)
-        return save_dir / "lilLogic"
+        return save_dir
 
     @classmethod
     def write_save(cls, filepath: str, save_data: SaveData) -> None:

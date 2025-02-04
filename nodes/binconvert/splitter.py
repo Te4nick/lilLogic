@@ -14,14 +14,14 @@ class Splitter(Node):
         if bits > self.__bits:
             self.__bits = bits
             self.set_field_value("Bits", bits)
-            new_field = BoolField(
-                f"Y{bits - 1}",
-                parent=self.alias,
-                callback=self.calculate,
-                attribute_type=1,
+            self.add_field(
+                BoolField(
+                    f"Y{bits - 1}",
+                    parent=self.alias,
+                    callback=self.calculate,
+                    attribute_type=1,
+                )
             )
-            self.add_field(f"Y{bits - 1}", new_field)
-            new_field.build()
             return
 
         if bits < self.__bits:
@@ -33,23 +33,21 @@ class Splitter(Node):
     def build(self):
         self.__bits = 2
         self.add_field(
-            "Bits",
             IntField(
                 "Bits",
                 parent=self.alias,
                 callback=self.__on_bits_changed,
                 attribute_type=2,
+                default_value=2,
             ),
         )
         self.add_input("X0")
         self.add_field(
-            "Y0",
             BoolField(
                 "Y0", parent=self.alias, callback=self.calculate, attribute_type=1
             ),
         )
         self.add_field(
-            "Y1",
             BoolField(
                 "Y1", parent=self.alias, callback=self.calculate, attribute_type=1
             ),

@@ -11,7 +11,7 @@ class Mux4to2(Node):
         self.add_input("D1")
         self.add_input("D2")
         self.add_input("D3")
-        self.add_field("A0", IntField("A0", parent=self.alias, callback=self.calculate))
+        self.add_field(IntField("A0", parent=self.alias, callback=self.calculate))
         self.add_output("Output")
 
     def calculate(self):

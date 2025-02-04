@@ -28,12 +28,11 @@ class FileMenu:
             callback=callback,
         ):
             dpg.add_file_extension(".json", color=(0, 255, 0, 255))
-    
+
     def __on_file_new(self):
         self.__on_file_save()
         self.__node_editor.clear_canvas()
         self.__file_path_name = ""
-
 
     def __on_file_save(self):
         if self.__file_path_name:

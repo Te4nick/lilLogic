@@ -39,7 +39,7 @@ class Node:
 
         self.__build_node(user_data)
         self.build()
-        self.__build_fields()
+        # self.__build_fields()
 
         self.calculate()
 
@@ -61,9 +61,9 @@ class Node:
         ic(dpg.get_item_user_data(self.alias))
         ic(f"Building {self.alias}")
 
-    def __build_fields(self):
-        for field in self.__fields.values():
-            field.build()
+    # def __build_fields(self):
+    #     for field in self.__fields.values():
+    #         field.build()
 
     @classmethod
     def from_data(cls, data: NodeData, parent: int | str = 0) -> "Node":
@@ -84,18 +84,22 @@ class Node:
         pass
 
     def add_input(self, label: str, readonly: bool = False):
-        self.__fields[label] = IntField(
-            label, self.alias, dpg.mvNode_Attr_Input, self.calculate, readonly
+        self.add_field(
+            IntField(label, self.alias, dpg.mvNode_Attr_Input, self.calculate, readonly)
         )
 
     def add_output(self, label: str, readonly: bool = True):
-        self.__fields[label] = IntField(
-            label, self.alias, dpg.mvNode_Attr_Output, self.calculate, readonly
+        self.add_field(
+            IntField(
+                label, self.alias, dpg.mvNode_Attr_Output, self.calculate, readonly
+            )
         )
 
     def add_static(self, label: str, readonly: bool = False):
-        self.__fields[label] = IntField(
-            label, self.alias, dpg.mvNode_Attr_Static, self.calculate, readonly
+        self.add_field(
+            IntField(
+                label, self.alias, dpg.mvNode_Attr_Static, self.calculate, readonly
+            )
         )
 
     def set_field_value(self, label: str, value: int):
@@ -104,8 +108,11 @@ class Node:
     def get_field_value(self, label) -> int:
         return self.__fields[label].get_value()
 
-    def add_field(self, label: str, field: Field):
+    def add_field(self, field: Field, label: str | None = None):
+        if not label:
+            label = field.label
         self.__fields[label] = field
+        field.build()
         ic(self.__fields)
 
     def get_field(self, item: int | str) -> Field:

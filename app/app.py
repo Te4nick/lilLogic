@@ -17,9 +17,11 @@ class App:
         )
         dpg.set_primary_window(main_window, True)
 
-        table = dpg.add_table(parent=main_window, resizable=True, header_row=False)
+        table = dpg.add_table(
+            parent=main_window, resizable=True, hideable=True, header_row=False
+        )
         dpg.add_table_column(parent=table)
-        dpg.add_table_column(parent=table)
+        dpg.add_table_column(parent=table, width=200)
         row = dpg.add_table_row(parent=table)
 
         self.node_editor = NodeEditor(dpg.add_child_window(parent=row))
