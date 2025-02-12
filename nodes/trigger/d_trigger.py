@@ -1,5 +1,3 @@
-from icecream import ic
-
 from internal.nodeedit import Node
 from internal.nodeedit.fields import BoolField
 
