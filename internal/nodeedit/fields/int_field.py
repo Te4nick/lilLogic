@@ -1,6 +1,5 @@
 import dearpygui.dearpygui as dpg
-from typing import Any, Callable
-from icecream import ic
+from typing import Any
 
 from .field import Field
 from internal.utils import logger
