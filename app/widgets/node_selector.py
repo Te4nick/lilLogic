@@ -1,8 +1,8 @@
 import dearpygui.dearpygui as dpg
-from icecream import ic
 
 from internal.managers import NodeImporter
 from internal.nodeedit import Node, NodeData
+from internal.utils import logger
 
 
 class NodeSelector:
@@ -14,7 +14,9 @@ class NodeSelector:
 
     def __on_add_node(self, package_name: str, node_name: str):
         def on_add_node(sender, app_data):
-            ic("Entering __on_add_node", package_name, node_name)
+            logger.debug(
+                f"Entering __on_add_node with package: {package_name}, node: {node_name}"
+            )
             node_class: Node = self.__nimport.get_node_class(package_name, node_name)
             node_class()
 

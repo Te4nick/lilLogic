@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Any
 from internal.nodeedit.abc.link import Link
 from internal.nodeedit.abc.linkableabc import LinkableABC
-from internal.utils import dpg2class, dpg2label
+from internal.utils import dpg2class
 
 
 class NodeLinkData(BaseModel):

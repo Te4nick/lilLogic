@@ -1,26 +1,26 @@
 import os
 import glob
 
-from icecream import ic
 import importlib.machinery
 from internal.nodeedit import Node
+from internal.utils import logger
 
 
 class NodeImporter:
     def __init__(self, path: str | None = None):
         if path is None:
             current_script_path = os.path.abspath(__file__)
-            ic(current_script_path)
+            logger.debug(f"current_script_path: {current_script_path}")
 
             # Building the path to the project root directory
             project_root = os.path.dirname(
                 os.path.dirname(os.path.dirname(current_script_path))
             )
-            ic(project_root)
+            logger.debug(f"project_root: {project_root}")
 
             # Построение пути к желаемой директории внутри проекта (например, "my_directory")
             self.nodes_dir = os.path.join(project_root, "nodes")
-            ic(self.nodes_dir)
+            logger.debug(f"self.nodes_dir: {self.nodes_dir}")
         else:
             self.nodes_dir = path
 
@@ -45,7 +45,9 @@ class NodeImporter:
             package_name = os.path.basename(os.path.dirname(package))
             self.node_dict[package_name] = {}
 
-        return ic(list(self.node_dict.keys()))
+        packages_list: list[str] = list(self.node_dict.keys())
+        logger.debug(f"packages_list: {packages_list}")
+        return packages_list
 
     def get_nodes(self, package_name: str, path: str | None = None):
         if path is None:
@@ -54,13 +56,17 @@ class NodeImporter:
         # Building package __init__.py file path
         init_file_path = os.path.join(path, package_name, "__init__.py")
 
-        ic(package_name, path, init_file_path)
+        logger.debug(
+            f"package_name: {package_name}, path: {path}, init_file_path: {init_file_path}"
+        )
 
         if os.path.exists(init_file_path):
             pkg_loader = importlib.machinery.SourceFileLoader(
                 package_name, init_file_path
             )
-            ic(pkg_loader.is_package(package_name))
+            logger.debug(
+                f"pkg_loader.is_package(package_name): {pkg_loader.is_package(package_name)}"
+            )
 
             if pkg_loader.is_package(package_name):
 
@@ -71,7 +77,7 @@ class NodeImporter:
                         node = getattr(package, node_name, None)
                         if issubclass(node, Node):
                             self.node_dict[package_name][node_name] = node
-                ic(package.__all__)
+                logger.debug(f"package.__all__: {package.__all__}")
 
                 return package.__all__
 
@@ -86,10 +92,9 @@ class NodeImporter:
 
 
 if __name__ == "__main__":
-    ic.configureOutput(includeContext=True)
     nimport = NodeImporter()
     npkgs = nimport.get_packages()
     for pkg in npkgs:
-        ic(pkg, nimport.get_nodes(pkg))
+        logger.debug(f"package: {pkg}, nodes: {nimport.get_nodes(pkg)}")
 
-    ic(nimport.node_dict)
+    logger.debug(f"nimport.node_dict: {nimport.node_dict}")

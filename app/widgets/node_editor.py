@@ -1,9 +1,8 @@
 import dearpygui.dearpygui as dpg
-from icecream import ic
 
 from internal.nodeedit import NodeLink, Node, NodeLinkData
 from internal.managers import SaveData
-from internal.utils import dpg2class
+from internal.utils import dpg2class, logger
 
 
 # Destroy window if closed
@@ -18,15 +17,12 @@ class NodeEditor:
         self.__init_window(parent)
 
     def __init_window(self, parent):
-        # Add node editor to the window
         self.dpg_node_editor = dpg.add_node_editor(
             parent=parent,
             tag="NodeEditor",
             minimap=True,
             minimap_location=dpg.mvNodeMiniMap_Location_BottomLeft,
-            # Function call for updating all nodes if a new link is created
             callback=self.__on_link_callback,
-            # Function call for updating if a link is destroyed
             delink_callback=self.__on_delink_callback,
             user_data={"class": self},
         )
@@ -39,7 +35,6 @@ class NodeEditor:
                 key=dpg.mvKey_Delete, callback=self.__on_delete_item_callback
             )
 
-    # End note editor
     @staticmethod
     def __on_link_callback(_, app_data):
         NodeLink(app_data[0], app_data[1], parent="NodeEditor")
@@ -47,19 +42,20 @@ class NodeEditor:
 
     @staticmethod
     def __on_delink_callback(_, app_data):  # app_data -> link_id
-        ic(app_data)
+        logger.debug(f"app_data: {app_data}")
         dpg2class(app_data).__del__()
         pass
 
     @staticmethod
     def __on_delete_item_callback(_):
         for selected_link in dpg.get_selected_links("NodeEditor"):
-            ic(dpg.get_item_label(selected_link))
+            logger.debug(
+                f"dpg.get_item_label(selected_link): {dpg.get_item_label(selected_link)}"
+            )
             dpg2class(selected_link).__del__()
         for selected_node in dpg.get_selected_nodes("NodeEditor"):
-            ic(dpg.get_item_label(selected_node))
+            logger.debug(f"selected_node: {selected_node}")
             dpg2class(selected_node).__del__()
-            # ic(self.__node_links)
 
     def __on_save_last_node_position(self):
         if dpg.get_selected_nodes("NodeEditor"):

@@ -1,11 +1,11 @@
 from uuid import uuid4, UUID
 from typing import Any
 import dearpygui.dearpygui as dpg
-from icecream import ic
 from pydantic import BaseModel
 
 from .fields import Field, FieldData
 from .fields import IntField
+from internal.utils import logger
 
 
 class NodeData(BaseModel):
@@ -39,7 +39,6 @@ class Node:
 
         self.__build_node(user_data)
         self.build()
-        # self.__build_fields()
 
         self.calculate()
 
@@ -58,12 +57,8 @@ class Node:
             label=self.node_type,
             pos=user_data["pos"] if "pos" in user_data.keys() else [0, 0],
         )
-        ic(dpg.get_item_user_data(self.alias))
-        ic(f"Building {self.alias}")
-
-    # def __build_fields(self):
-    #     for field in self.__fields.values():
-    #         field.build()
+        logger.debug(f"Building {self.alias}")
+        logger.debug(f"user_data: {dpg.get_item_user_data(self.alias)}")
 
     @classmethod
     def from_data(cls, data: NodeData, parent: int | str = 0) -> "Node":
@@ -113,7 +108,7 @@ class Node:
             label = field.label
         self.__fields[label] = field
         field.build()
-        ic(self.__fields)
+        logger.debug(f"self.__fields: {self.__fields}")
 
     def get_field(self, item: int | str) -> Field:
         label = item
